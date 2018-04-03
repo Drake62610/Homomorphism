@@ -31,7 +31,7 @@ CipherBit CipherBit::add(CipherBit b){
   (this -> evaluator) -> add(a,b.cipherBit);
   return b;
 }
-void negate(){
+void CipherBit::negate(){
 
 }
 CipherBit multiply(CipherBit b){
