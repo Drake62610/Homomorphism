@@ -1,6 +1,6 @@
 #include <vector>
 #include <seal/seal.h>
-#include <../Structures/CipherInt8bit.h>
+#include <../Structures/CipherBit.h>
 
 using namespace std;
 using namespace seal;
@@ -27,6 +27,10 @@ int main(){
     Decryptor decryptor(context, secret_key);
 
   //Test
-  CipherInt8bit myFirstBit;
+  Plaintext myPlaintext("1");
+  Ciphertext myCipher; encryptor.encrypt(myPlaintext,myCipher);
+  CipherBit myFirstBit(evaluator, myCipher);
+  myFirstBit.getcipherBit();
+  myFirstBit.setcipherBit(myFirstBit.getcipherBit());
   return 0;
 }
