@@ -10,8 +10,8 @@ void test_xor1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   Plaintext plainResult("0");
   Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
   Ciphertext myCipher0; encryptor.encrypt(myPlaintext0,myCipher0);
-  CipherBit myCipherBit1(evaluator, myCipher1);
-  CipherBit myCipherBit0(evaluator, myCipher0);
+  CipherBit myCipherBit1(evaluator,encryptor, myCipher1);
+  CipherBit myCipherBit0(evaluator,encryptor, myCipher0);
 
   //Tests
   CipherBit result = myCipherBit0;
@@ -38,9 +38,9 @@ void test_add1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   Plaintext plainResult("0"); Plaintext plainCarry("0");
   Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
   Ciphertext myCipher0; encryptor.encrypt(myPlaintext0,myCipher0);
-  CipherBit myCipherBit1(evaluator, myCipher1);
-  CipherBit myCipherBit0(evaluator, myCipher0);
-  CipherBit cipherCarry(evaluator, myCipher0);
+  CipherBit myCipherBit1(evaluator,encryptor, myCipher1);
+  CipherBit myCipherBit0(evaluator,encryptor, myCipher0);
+  CipherBit cipherCarry(evaluator,encryptor, myCipher0);
 
   //Tests
   CipherBit result = myCipherBit0;
@@ -66,6 +66,20 @@ void test_add1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   cout << "1 + 1 = " << plainResult.to_string() << "  carry = " << plainCarry.to_string() << endl;
 }
 
+void test_reverse(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
+  Plaintext myPlaintext1("1"); Plaintext plainResult("0");
+  Ciphertext myCipher; encryptor.encrypt(myPlaintext1,myCipher);
+  CipherBit cipherBit1(evaluator,encryptor, myCipher);
+  cipherBit1.reverse();
+  decryptor.decrypt(cipherBit1.getcipherBit(),plainResult);
+  cout << "Reverse of 1 is " << plainResult.to_string() << endl;
+  Plaintext myPlaintext0("0");
+  encryptor.encrypt(myPlaintext0,myCipher);
+  CipherBit cipherBit2(evaluator,encryptor, myCipher);
+  cipherBit2.reverse();
+  decryptor.decrypt(cipherBit2.getcipherBit(),plainResult);
+  cout << "Reverse of 0 is " << plainResult.to_string() << endl;
+}
 int main(){
   //Configuration des paramètres homomorphiques
     EncryptionParameters parms;
@@ -88,14 +102,17 @@ int main(){
     Decryptor decryptor(context, secret_key);
 
   //Test
-  Plaintext myPlaintext1("1");
-  Plaintext myPlaintext0("0");
+  //Plaintext myPlaintext1("1");
+  //Plaintext myPlaintext0("0");
   //Ciphertext myCipher; encryptor.encrypt(myPlaintext1,myCipher);
-  //CipherBit myFirstBit(evaluator, myCipher);
+  //CipherBit myFirstBit(evaluator,encryptor, myCipher);
+  //myFirstBit.reverse();
   //decryptor.decrypt(myFirstBit.getcipherBit(),myPlaintext1);
   //cout << myPlaintext1.to_string() <<endl;
-  test_xor1bit(evaluator,decryptor,encryptor);
-  test_add1bit(evaluator,decryptor,encryptor);
 
+  //Test with function
+  //test_xor1bit(evaluator,decryptor,encryptor);
+  //test_add1bit(evaluator,decryptor,encryptor);
+  test_reverse(evaluator,decryptor,encryptor);
   return 0;
 }
