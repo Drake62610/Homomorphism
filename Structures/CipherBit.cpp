@@ -5,10 +5,8 @@ using namespace seal;
 
 //Constructor
 CipherBit::CipherBit(seal::Evaluator &eva, seal::Ciphertext a){
-  cout << "construction en cours" << endl;
   evaluator = &eva;
   cipherBit = a;
-  cout << "done" << endl;
 }
 
 //Getter
