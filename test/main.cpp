@@ -4,6 +4,7 @@
 
 using namespace std;
 using namespace seal;
+
 void test_xor1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   cout << "Table de vérité du XOR sur 1 bit" << endl;
   Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
@@ -65,7 +66,34 @@ void test_add1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   decryptor.decrypt(cipherCarry.getcipherBit(),plainCarry);
   cout << "1 + 1 = " << plainResult.to_string() << "  carry = " << plainCarry.to_string() << endl;
 }
+void test_isLesser1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
+  cout << "Table de vérité du XOR sur < bit" << endl;
+  Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
+  Plaintext plainResult("0");
+  Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
+  Ciphertext myCipher0; encryptor.encrypt(myPlaintext0,myCipher0);
+  CipherBit myCipherBit1(evaluator,encryptor, myCipher1);
+  CipherBit myCipherBit0(evaluator,encryptor, myCipher0);
 
+  //Tests
+  CipherBit result = myCipherBit0;
+  result.isLesser(myCipherBit0);
+  decryptor.decrypt(result.getcipherBit(),plainResult);
+  cout << "0 < 0 = " << plainResult.to_string() << endl;
+
+  result.isLesser(myCipherBit1);
+  decryptor.decrypt(result.getcipherBit(),plainResult);
+  cout << "0 < 1 = " << plainResult.to_string() << endl;
+
+  result = myCipherBit1;
+  result.isLesser(myCipherBit0);
+  decryptor.decrypt(result.getcipherBit(),plainResult);
+  cout << "1 < 0 = " << plainResult.to_string() << endl;
+
+  result.isLesser(myCipherBit1);
+  decryptor.decrypt(result.getcipherBit(),plainResult);
+  cout << "1 < 1 = " << plainResult.to_string() << endl;
+}
 void test_reverse(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   Plaintext myPlaintext1("1"); Plaintext plainResult("0");
   Ciphertext myCipher; encryptor.encrypt(myPlaintext1,myCipher);
@@ -113,6 +141,7 @@ int main(){
   //Test with function
   //test_xor1bit(evaluator,decryptor,encryptor);
   //test_add1bit(evaluator,decryptor,encryptor);
-  test_reverse(evaluator,decryptor,encryptor);
+  //test_reverse(evaluator,decryptor,encryptor);
+  test_isLesser1bit(evaluator,decryptor,encryptor);
   return 0;
 }

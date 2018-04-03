@@ -33,6 +33,13 @@ public:
     We will XOR with "1"
   */
   void reverse();
+  CipherBit copy();
+  /*
+    Input : the CipherBit to compare with
+    Output : A Cipherbit containing an encrypted
+    "1" if True or "0" if false
+  */
+  CipherBit isLesser(CipherBit b);
   CipherBit multiply(CipherBit b);
 
 private:

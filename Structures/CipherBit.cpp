@@ -45,6 +45,16 @@ void CipherBit::reverse(){
   (this -> encryptor) -> encrypt(myPlaintext,myCipher);
   this -> XOR(CipherBit(*evaluator,*encryptor,(Ciphertext)myCipher));
 }
+
+CipherBit CipherBit::copy(){
+  return CipherBit(*evaluator,*encryptor,(Ciphertext)cipherBit);
+}
+CipherBit CipherBit::isLesser(CipherBit b){
+	CipherBit tmp= this->copy();
+	tmp.reverse();
+	(this -> evaluator) -> multiply(this -> cipherBit,b.getcipherBit());
+	return tmp;
+}
 CipherBit multiply(CipherBit b){
   return b;
 }
