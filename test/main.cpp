@@ -30,7 +30,8 @@ int main(){
   Plaintext myPlaintext("1");
   Ciphertext myCipher; encryptor.encrypt(myPlaintext,myCipher);
   CipherBit myFirstBit(evaluator, myCipher);
-  myFirstBit.getcipherBit();
-  myFirstBit.setcipherBit(myFirstBit.getcipherBit());
+  myFirstBit.XOR(myFirstBit);
+  decryptor.decrypt(myFirstBit.getcipherBit(),myPlaintext);
+  cout << myPlaintext.to_string() <<endl;
   return 0;
 }
