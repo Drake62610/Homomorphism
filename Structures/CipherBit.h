@@ -40,6 +40,7 @@ public:
     "1" if True or "0" if false
   */
   CipherBit isLesser(CipherBit b);
+  CipherBit isGreaterOrEqual(CipherBit b);
   void multiply(CipherBit b);
   /*
     Input : b is the Cipherbit to multiply to this->cipherBit
