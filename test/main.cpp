@@ -107,7 +107,7 @@ void test_reverse(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
 void test_multiply1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   cout << "Table de vérité du x sur 1 bit" << endl;
   Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
-  Plaintext plainResult("0"); 
+  Plaintext plainResult("0");
   Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
   Ciphertext myCipher0; encryptor.encrypt(myPlaintext0,myCipher0);
   CipherBit myCipherBit1(evaluator,encryptor, myCipher1);
@@ -115,10 +115,13 @@ void test_multiply1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryp
 
   //Tests
   CipherBit result = myCipherBit0;
+  cout << &result << endl;
+  cout << &myCipherBit0 << endl;
   result.multiply(myCipherBit0);
   decryptor.decrypt(result.getcipherBit(),plainResult);
   cout << "0 x 0 = " << plainResult.to_string() << endl;
 
+  result = myCipherBit0;
   result.multiply(myCipherBit1);
   decryptor.decrypt(result.getcipherBit(),plainResult);
   cout << "0 x 1 = " << plainResult.to_string() << endl;
@@ -128,6 +131,7 @@ void test_multiply1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryp
   decryptor.decrypt(result.getcipherBit(),plainResult);
   cout << "1 x 0 = " << plainResult.to_string() << endl;
 
+  result = myCipherBit1;
   result.multiply(myCipherBit1);
   decryptor.decrypt(result.getcipherBit(),plainResult);
   cout << "1 x 1 = " << plainResult.to_string() << endl;
