@@ -1,6 +1,6 @@
 
-
-void Globale(bool** matrix,int largeur,int longueur,int nbEtape);
+void destroy(bool** matrix,int largeur,int longueur);
+void globale(bool** matrix,int largeur,int longueur,int nbEtape);
 int compteurLivingCell(bool** matrix,int largeur,int longueur,int posC,int posL);
 void initToZero(bool** matrix,int largeur,int longueur);
 int initGrenouille(bool** matrix);

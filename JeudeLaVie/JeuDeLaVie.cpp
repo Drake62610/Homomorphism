@@ -27,19 +27,27 @@ int main(int argc, char const *argv[])
 
 	largeur=longueur=initGrenouille(matrix);
 	printMatrix(matrix,largeur,longueur);
-	Globale(matrix,largeur,longueur,4);
+	globale(matrix,largeur,longueur,4);
+	destroy(matrix,largeur,longueur);
 	return 0;
 }
 
-void Globale(bool** matrix,int largeur,int longueur,int nbEtape){
+void destroy(bool** matrix,int largeur,int longueur){
+	
+	for(int i = 0; i < largeur; i++) {
+		delete(matrix[i]);
+	}
+	delete(matrix);
+}
+
+void globale(bool** matrix,int largeur,int longueur,int nbEtape){
 	int compteur;
-	int etape=0;
 	bool** matrixNext;
 	matrixNext = (bool**) malloc(largeur * sizeof(bool*));
 	for(int i = 0; i < largeur; i++) {
 		matrixNext[i] = (bool*) malloc(longueur * sizeof(bool));
 	}
-	while (etape<nbEtape){
+	for (int etape=0;etape<nbEtape;etape++){
 		for (int i=0;i<largeur;i++){
 			for (int j=0;j<longueur;j++){
 				compteur=compteurLivingCell(matrix,largeur,longueur,i,j);
@@ -57,10 +65,8 @@ void Globale(bool** matrix,int largeur,int longueur,int nbEtape){
 		copyMatrix(matrix,matrixNext,largeur,longueur);
 		cout<<"Après l'étape "<<etape<<endl;
 		printMatrix(matrix,largeur,longueur);
-		etape+=1;
 	}
-	
-
+	destroy(matrixNext,largeur,longueur);
 }
 
 int compteurLivingCell(bool **matrix,int largeur,int longueur,int posC,int posL){
