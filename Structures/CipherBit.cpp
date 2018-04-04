@@ -51,8 +51,12 @@ CipherBit CipherBit::copy(){
 }
 CipherBit CipherBit::isLesser(CipherBit b){
 	CipherBit tmp= this->copy();
+  Ciphertext myCipher = b.getcipherBit();
+  cout << &cipherBit << endl;
+  cout << &myCipher << endl;
 	tmp.reverse();
-	(this -> evaluator) -> multiply(this -> cipherBit,b.getcipherBit());
+  Ciphertext tmp2 = (Ciphertext)tmp.getcipherBit()
+	(this -> evaluator) -> multiply(tmp2,myCipher);
 	return tmp;
 }
 CipherBit multiply(CipherBit b){
