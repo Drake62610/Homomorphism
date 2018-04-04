@@ -40,7 +40,11 @@ public:
     "1" if True or "0" if false
   */
   CipherBit isLesser(CipherBit b);
-  CipherBit multiply(CipherBit b);
+  void multiply(CipherBit b);
+  /*
+    Input : b is the Cipherbit to multiply to this->cipherBit
+    this->cipherBit will be override by the result
+  */
 
 private:
   seal::Ciphertext cipherBit; //A cipherbit is composed by one Ciphertext wich will either be the polynomial "0" or "1"

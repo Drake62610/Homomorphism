@@ -55,6 +55,6 @@ CipherBit CipherBit::isLesser(CipherBit b){
 	(this -> evaluator) -> multiply(this -> cipherBit,b.getcipherBit());
 	return tmp;
 }
-CipherBit multiply(CipherBit b){
-  return b;
+void CipherBit::multiply(CipherBit b){
+  (this->evaluator)->multiply(this->cipherBit,b);
 }
