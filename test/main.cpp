@@ -50,6 +50,7 @@ void test_add1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   decryptor.decrypt(cipherCarry.getcipherBit(),plainCarry);
   cout << "0 + 0 = " << plainResult.to_string() << "  carry = " << plainCarry.to_string() << endl;
 
+  result = myCipherBit0;
   cipherCarry = result.add(myCipherBit1);
   decryptor.decrypt(result.getcipherBit(),plainResult);
   decryptor.decrypt(cipherCarry.getcipherBit(),plainCarry);
@@ -61,6 +62,7 @@ void test_add1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   decryptor.decrypt(cipherCarry.getcipherBit(),plainCarry);
   cout << "1 + 0 = " << plainResult.to_string() << "  carry = " << plainCarry.to_string() << endl;
 
+  result = myCipherBit1;
   cipherCarry = result.add(myCipherBit1);
   decryptor.decrypt(result.getcipherBit(),plainResult);
   decryptor.decrypt(cipherCarry.getcipherBit(),plainCarry);
@@ -115,8 +117,6 @@ void test_multiply1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryp
 
   //Tests
   CipherBit result = myCipherBit0;
-  cout << &result << endl;
-  cout << &myCipherBit0 << endl;
   result.multiply(myCipherBit0);
   decryptor.decrypt(result.getcipherBit(),plainResult);
   cout << "0 x 0 = " << plainResult.to_string() << endl;
