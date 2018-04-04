@@ -1,69 +1,3 @@
-<<<<<<< HEAD
-#include "CipherBit.h"
-
-using namespace std;
-using namespace seal;
-
-//Constructor
-CipherBit::CipherBit(seal::Evaluator &eva,seal::Encryptor &enc, seal::Ciphertext a){
-  evaluator = &eva;
-  encryptor = &enc;
-  cipherBit = a;
-}
-
-//Getter
-Ciphertext CipherBit::getcipherBit(){
-  return this->cipherBit;
-}
-Evaluator* CipherBit::getEvaluator(){
-  return this->evaluator;
-}
-//Setter
-void CipherBit::setcipherBit(Ciphertext a){
-  this -> cipherBit = a;
-}
-
-//Methods
-void CipherBit::XOR(CipherBit b){
-  Ciphertext xored = b.getcipherBit(); //We get the ciphertext of the CipherBit
-  (this -> evaluator) -> negate(xored);
-  (this -> evaluator) -> add(this -> cipherBit,xored);
-  (this -> evaluator) -> square(this -> cipherBit); //Now this->cipherBit has the XORed result
-}
-
-CipherBit CipherBit::add(CipherBit b){
-  Ciphertext adding = b.getcipherBit();
-  Ciphertext copy = this -> cipherBit;
-  this -> XOR(b);
-  (this -> evaluator) -> multiply(copy,adding);
-  CipherBit result(*evaluator,*encryptor,(Ciphertext)copy);
-  return result;
-}
-
-void CipherBit::reverse(){
-  Plaintext myPlaintext("1");
-  Ciphertext myCipher;
-  (this -> encryptor) -> encrypt(myPlaintext,myCipher);
-  this -> XOR(CipherBit(*evaluator,*encryptor,(Ciphertext)myCipher));
-}
-
-CipherBit CipherBit::copy(){
-  return CipherBit(*evaluator,*encryptor,(Ciphertext)cipherBit);
-}
-CipherBit CipherBit::isLesser(CipherBit b){
-	CipherBit tmp= this->copy();
-  Ciphertext myCipher = b.getcipherBit();
-  cout << &cipherBit << endl;
-  cout << &myCipher << endl;
-	tmp.reverse();
-  Ciphertext tmp2 = (Ciphertext)tmp.getcipherBit()
-	(this -> evaluator) -> multiply(tmp2,myCipher);
-	return tmp;
-}
-CipherBit multiply(CipherBit b){
-  return b;
-}
-=======
 #include "CipherBit.h"
 
 using namespace std;
@@ -118,10 +52,11 @@ CipherBit CipherBit::copy(){
 CipherBit CipherBit::isLesser(CipherBit b){
 	CipherBit tmp= this->copy();
 	tmp.reverse();
-	(this -> evaluator) -> multiply(this -> cipherBit,b.getcipherBit());
-	return tmp;
+	tmp.multiply(b);
+	return this -> cipherBit;
 }
 void CipherBit::multiply(CipherBit b){
-  (this->evaluator)->multiply(this->cipherBit,b);
+  Ciphertext mult = b.getcipherBit();
+  Ciphertext copy = this -> cipherBit;
+  (this -> evaluator) -> multiply(this -> cipherBit,mult);
 }
->>>>>>> 09f2bfb4de1edbcdd5718d9f42a51a59851ebd9d
