@@ -82,6 +82,7 @@ void test_isLesser1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryp
   decryptor.decrypt(result.isLesser(myCipherBit0).getcipherBit(),plainResult);
   cout << "0 < 0 = " << plainResult.to_string() << endl;
 
+  result = myCipherBit0;
   decryptor.decrypt(result.isLesser(myCipherBit1).getcipherBit(),plainResult);
   cout << "0 < 1 = " << plainResult.to_string() << endl;
 
@@ -89,9 +90,36 @@ void test_isLesser1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryp
   decryptor.decrypt(result.isLesser(myCipherBit0).getcipherBit(),plainResult);
   cout << "1 < 0 = " << plainResult.to_string() << endl;
 
+  result = myCipherBit1;
   decryptor.decrypt(result.isLesser(myCipherBit1).getcipherBit(),plainResult);
   cout << "1 < 1 = " << plainResult.to_string() << endl;
 }
+
+void test_isGreaterOrEqual1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
+  cout << "Table de vérité du >= sur 1 bit" << endl;
+  Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
+  Plaintext plainResult("0");
+  Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
+  Ciphertext myCipher0; encryptor.encrypt(myPlaintext0,myCipher0);
+  CipherBit myCipherBit1(evaluator,encryptor, myCipher1);
+  CipherBit myCipherBit0(evaluator,encryptor, myCipher0);
+
+  //Tests
+  CipherBit result = myCipherBit0;
+  decryptor.decrypt(result.isGreaterOrEqual(myCipherBit0).getcipherBit(),plainResult);
+  //cout << "0 >= 0 = " << plainResult.to_string() << endl;
+
+  decryptor.decrypt(result.isGreaterOrEqual(myCipherBit1).getcipherBit(),plainResult);
+  //cout << "0 >= 1 = " << plainResult.to_string() << endl;
+
+  result = myCipherBit1;
+  decryptor.decrypt(result.isGreaterOrEqual(myCipherBit0).getcipherBit(),plainResult);
+  //cout << "1 >= 0 = " << plainResult.to_string() << endl;
+
+  decryptor.decrypt(result.isGreaterOrEqual(myCipherBit1).getcipherBit(),plainResult);
+  //cout << "1 >= 1 = " << plainResult.to_string() << endl;
+}
+
 void test_reverse(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   Plaintext myPlaintext1("1"); Plaintext plainResult("0");
   Ciphertext myCipher; encryptor.encrypt(myPlaintext1,myCipher);
@@ -161,17 +189,28 @@ int main(){
   Plaintext myPlaintext1("1");
   Plaintext myPlaintext0("0");
   Ciphertext myCipher; encryptor.encrypt(myPlaintext1,myCipher);
+  Ciphertext myCipher2; encryptor.encrypt(myPlaintext0,myCipher2);
   CipherBit myFirstBit(evaluator,encryptor, myCipher);
-  myFirstBit.multiply(myFirstBit);
+  CipherBit myFirstBit2(evaluator,encryptor, myCipher2);
+  //myFirstBit.multiply(myFirstBit);
   //myFirstBit.reverse();
   decryptor.decrypt(myFirstBit.getcipherBit(),myPlaintext1);
   cout << myPlaintext1.to_string() <<endl;
 
+  CipherBit tmp=myFirstBit.isLesser(myFirstBit2);
+  tmp.reverse();
+
+  Plaintext plainResult;
+  decryptor.decrypt(tmp.getcipherBit(),plainResult);
+  cout << "1 >= 0 " << plainResult.to_string() << endl;
+
+
   //Test with function
   //test_xor1bit(evaluator,decryptor,encryptor);
   //test_add1bit(evaluator,decryptor,encryptor);
-  //test_reverse(evaluator,decryptor,encryptor);
-  test_isLesser1bit(evaluator,decryptor,encryptor);
-  test_multiply1bit(evaluator,decryptor,encryptor);
+  test_reverse(evaluator,decryptor,encryptor);
+  //test_isGreaterOrEqual1bit(evaluator,decryptor,encryptor);
+  //test_isLesser1bit(evaluator,decryptor,encryptor);
+  //test_multiply1bit(evaluator,decryptor,encryptor);
   return 0;
 }
