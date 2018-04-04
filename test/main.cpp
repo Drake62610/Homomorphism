@@ -67,7 +67,7 @@ void test_add1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   cout << "1 + 1 = " << plainResult.to_string() << "  carry = " << plainCarry.to_string() << endl;
 }
 void test_isLesser1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
-  cout << "Table de vérité du XOR sur < bit" << endl;
+  cout << "Table de vérité du < sur 1 bit" << endl;
   Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
   Plaintext plainResult("0");
   Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
@@ -77,21 +77,17 @@ void test_isLesser1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryp
 
   //Tests
   CipherBit result = myCipherBit0;
-  result.isLesser(myCipherBit0);
-  decryptor.decrypt(result.getcipherBit(),plainResult);
+  decryptor.decrypt(result.isLesser(myCipherBit0).getcipherBit(),plainResult);
   cout << "0 < 0 = " << plainResult.to_string() << endl;
 
-  result.isLesser(myCipherBit1);
-  decryptor.decrypt(result.getcipherBit(),plainResult);
+  decryptor.decrypt(result.isLesser(myCipherBit1).getcipherBit(),plainResult);
   cout << "0 < 1 = " << plainResult.to_string() << endl;
 
   result = myCipherBit1;
-  result.isLesser(myCipherBit0);
-  decryptor.decrypt(result.getcipherBit(),plainResult);
+  decryptor.decrypt(result.isLesser(myCipherBit0).getcipherBit(),plainResult);
   cout << "1 < 0 = " << plainResult.to_string() << endl;
 
-  result.isLesser(myCipherBit1);
-  decryptor.decrypt(result.getcipherBit(),plainResult);
+  decryptor.decrypt(result.isLesser(myCipherBit1).getcipherBit(),plainResult);
   cout << "1 < 1 = " << plainResult.to_string() << endl;
 }
 void test_reverse(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
@@ -107,6 +103,34 @@ void test_reverse(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   cipherBit2.reverse();
   decryptor.decrypt(cipherBit2.getcipherBit(),plainResult);
   cout << "Reverse of 0 is " << plainResult.to_string() << endl;
+}
+void test_multiply1bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
+  cout << "Table de vérité du x sur 1 bit" << endl;
+  Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
+  Plaintext plainResult("0"); 
+  Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
+  Ciphertext myCipher0; encryptor.encrypt(myPlaintext0,myCipher0);
+  CipherBit myCipherBit1(evaluator,encryptor, myCipher1);
+  CipherBit myCipherBit0(evaluator,encryptor, myCipher0);
+
+  //Tests
+  CipherBit result = myCipherBit0;
+  result.multiply(myCipherBit0);
+  decryptor.decrypt(result.getcipherBit(),plainResult);
+  cout << "0 x 0 = " << plainResult.to_string() << endl;
+
+  result.multiply(myCipherBit1);
+  decryptor.decrypt(result.getcipherBit(),plainResult);
+  cout << "0 x 1 = " << plainResult.to_string() << endl;
+
+  result = myCipherBit1;
+  result.multiply(myCipherBit0);
+  decryptor.decrypt(result.getcipherBit(),plainResult);
+  cout << "1 x 0 = " << plainResult.to_string() << endl;
+
+  result.multiply(myCipherBit1);
+  decryptor.decrypt(result.getcipherBit(),plainResult);
+  cout << "1 x 1 = " << plainResult.to_string() << endl;
 }
 int main(){
   //Configuration des paramètres homomorphiques
@@ -130,18 +154,20 @@ int main(){
     Decryptor decryptor(context, secret_key);
 
   //Test
-  //Plaintext myPlaintext1("1");
-  //Plaintext myPlaintext0("0");
-  //Ciphertext myCipher; encryptor.encrypt(myPlaintext1,myCipher);
-  //CipherBit myFirstBit(evaluator,encryptor, myCipher);
+  Plaintext myPlaintext1("1");
+  Plaintext myPlaintext0("0");
+  Ciphertext myCipher; encryptor.encrypt(myPlaintext1,myCipher);
+  CipherBit myFirstBit(evaluator,encryptor, myCipher);
+  myFirstBit.multiply(myFirstBit);
   //myFirstBit.reverse();
-  //decryptor.decrypt(myFirstBit.getcipherBit(),myPlaintext1);
-  //cout << myPlaintext1.to_string() <<endl;
+  decryptor.decrypt(myFirstBit.getcipherBit(),myPlaintext1);
+  cout << myPlaintext1.to_string() <<endl;
 
   //Test with function
   //test_xor1bit(evaluator,decryptor,encryptor);
   //test_add1bit(evaluator,decryptor,encryptor);
   //test_reverse(evaluator,decryptor,encryptor);
   test_isLesser1bit(evaluator,decryptor,encryptor);
+  test_multiply1bit(evaluator,decryptor,encryptor);
   return 0;
 }

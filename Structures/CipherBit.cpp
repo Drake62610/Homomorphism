@@ -53,7 +53,7 @@ CipherBit CipherBit::isLesser(CipherBit b){
 	CipherBit tmp= this->copy();
 	tmp.reverse();
 	tmp.multiply(b);
-	return this -> cipherBit;
+	return tmp;
 }
 void CipherBit::multiply(CipherBit b){
   Ciphertext mult = b.getcipherBit();
