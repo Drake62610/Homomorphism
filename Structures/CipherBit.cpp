@@ -43,7 +43,8 @@ void CipherBit::reverse(){
   Plaintext myPlaintext("1");
   Ciphertext myCipher;
   (this -> encryptor) -> encrypt(myPlaintext,myCipher);
-  this -> XOR(CipherBit(*evaluator,*encryptor,(Ciphertext)myCipher));
+  (this -> evaluator) -> negate(this -> cipherBit);
+  (this -> evaluator) -> add(this -> cipherBit,myCipher);
 }
 
 CipherBit CipherBit::copy(){
