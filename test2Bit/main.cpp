@@ -1,6 +1,6 @@
 #include <vector>
 #include <seal/seal.h>
-//#include <../Structures/CipherBit.h>
+#include <../Structures/CipherBit.h>
 #include <../Structures/Cipher2Bit.h>
 
 using namespace std;
@@ -176,10 +176,12 @@ void test_add2bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   CipherBit myCipherBit0(evaluator,encryptor, myCipher0);
 
   //Tests
-  Cipher2Bit trois(myCipherBit1,myCipherBit1);
+  
+  Cipher2Bit trois(evaluator,encryptor,myCipherBit1,myCipherBit1);
+  /*
   decryptor.decrypt(trois.getCipherBit0().getcipherBit(),plainResult);
   cout << "bit0= " << plainResult.to_string() << endl;
-
+  */
 
 }
 

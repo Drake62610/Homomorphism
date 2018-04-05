@@ -3,17 +3,19 @@
 using namespace std;
 using namespace seal;
 //Constructor
-Cipher2Bit::Cipher2Bit(CipherBit &a,CipherBit &b){
-	this -> bit0=&a;
-	this -> bit1=&b;
+Cipher2Bit::Cipher2Bit(seal::Evaluator &eva,seal::Encryptor &enc,CipherBit a,CipherBit b){
+	evaluator = &eva;
+  	encryptor = &enc;
+	*(this -> bit0)=a;
+	*(this -> bit1)=b;
 }
 
 //Getter
 CipherBit Cipher2Bit::getCipherBit0(){
-	return this->bit0;
+	return *(this->bit0);
 }
 CipherBit Cipher2Bit::getCipherBit1(){
-	return this->bit1;
+	return *(this->bit1);
 }
 
 //Setter
