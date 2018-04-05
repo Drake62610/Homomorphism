@@ -9,13 +9,13 @@
 class Cipher2Bit{
 public:
   //Constructor
-  Cipher2Bit(CipherBit a,CipherBit b);
+  Cipher2Bit(CipherBit &a,CipherBit &b);
   //Getter
   CipherBit getCipherBit0();
   CipherBit getCipherBit1();
   //Setter
-  void setCipherBit0(CipherBit a);
-  void setCipherBit1(CipherBit b);
+  void setCipherBit0(CipherBit &a);
+  void setCipherBit1(CipherBit &b);
   //Methods
   /*
     Input : b is the Cipher2Bit to add to the current cipher2Bit
