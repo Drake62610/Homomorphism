@@ -60,6 +60,20 @@ void globale(bool** matrix,int largeur,int longueur,int nbEtape){
 				else {
 					matrixNext[i][j]=false;
 				}
+				/* Pour changer les conditions en une ligne:
+					compteur=Struct4Bits
+					"2" et "3"=Struct4Bits
+					result et "true" et "false"=1Bit
+					methodes utilisées :-XOR de Struct 4 Bits (ici seul les 3 premiers bits sont intéréssants) !!!!    return Cipher4bit !!! XOR(Cipher4Bit,Cipher4Bit)
+										-inverse4Bits() ->not logic sur chaque bit de la structure
+										-4BitsTo1Bit() -> multiplier chaque bit entre eux pour obtenir soit un 0 soit un 1
+					result="false";
+					result.add(XOR(compteur,"2").inverse4Bits().4BitsTo1Bit().multiply(matrix[i][j]));
+					result.add(XOR(compteur,"3").inverse().4BitsTo1Bit().multiply("true"));
+					
+					//result+=XOR(compteur,"2").inverse4Bits().4BitsTo1Bit()*(matrix[i][j]) + XOR(compteur,"3").inverse().4BitsTo1Bit()*("true");
+
+				*/
 			}
 		}
 		copyMatrix(matrix,matrixNext,largeur,longueur);
