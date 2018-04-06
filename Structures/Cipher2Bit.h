@@ -17,6 +17,7 @@ public:
   void setCipherBit0(CipherBit &a);
   void setCipherBit1(CipherBit &b);
   //Methods
+  void print();
   /*
     Input : b is the Cipher2Bit to add to the current cipher2Bit
     The cipher2Bit will be override by the result
@@ -25,12 +26,12 @@ public:
   CipherBit add(Cipher2Bit b);
 
 
+
 private:
-  CipherBit* bit0;
-  CipherBit* bit1;
-  /*
+  CipherBit bitZero;
+  CipherBit bitUn;
+  seal::Decryptor* decryptor;
   seal::Evaluator* evaluator; //Use an adress to avoid calling a constructor (witch won't exist)
   seal::Encryptor* encryptor; //Same here
-  */
 };
 #endif

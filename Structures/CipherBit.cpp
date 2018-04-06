@@ -4,6 +4,7 @@ using namespace std;
 using namespace seal;
 
 //Constructor
+CipherBit::CipherBit(){}
 CipherBit::CipherBit(seal::Evaluator &eva,seal::Encryptor &enc, seal::Ciphertext a){
   evaluator = &eva;
   encryptor = &enc;

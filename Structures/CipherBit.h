@@ -13,6 +13,7 @@ public:
             Ciphertext to stock in this CipherBit
     Noise : no noise are consumed in this constructor
   */
+  CipherBit();
   CipherBit(seal::Evaluator &evaluator,seal::Encryptor &encryptor, seal::Ciphertext);
   //Getter
   seal::Ciphertext getcipherBit();
