@@ -185,32 +185,51 @@ int main(){
     Evaluator evaluator(context);
     Decryptor decryptor(context, secret_key);
 
-  //Test
-  Plaintext myPlaintext1("1");
-  Plaintext myPlaintext0("0");
-  Ciphertext myCipher; encryptor.encrypt(myPlaintext1,myCipher);
-  Ciphertext myCipher2; encryptor.encrypt(myPlaintext0,myCipher2);
-  CipherBit myFirstBit(evaluator,encryptor, myCipher);
-  CipherBit myFirstBit2(evaluator,encryptor, myCipher2);
-  //myFirstBit.multiply(myFirstBit);
-  //myFirstBit.reverse();
-  decryptor.decrypt(myFirstBit.getcipherBit(),myPlaintext1);
-  cout << myPlaintext1.to_string() <<endl;
-
-  CipherBit tmp=myFirstBit.isLesser(myFirstBit2);
-  tmp.reverse();
-
-  Plaintext plainResult;
-  decryptor.decrypt(tmp.getcipherBit(),plainResult);
-  cout << "1 >= 0 " << plainResult.to_string() << endl;
-
-
   //Test with function
-  //test_xor1bit(evaluator,decryptor,encryptor);
-  //test_add1bit(evaluator,decryptor,encryptor);
-  test_reverse(evaluator,decryptor,encryptor);
-  //test_isGreaterOrEqual1bit(evaluator,decryptor,encryptor);
-  //test_isLesser1bit(evaluator,decryptor,encryptor);
-  //test_multiply1bit(evaluator,decryptor,encryptor);
+    //test_xor1bit(evaluator,decryptor,encryptor);
+    //test_add1bit(evaluator,decryptor,encryptor);
+    //test_reverse(evaluator,decryptor,encryptor);
+    //test_isGreaterOrEqual1bit(evaluator,decryptor,encryptor);
+    //test_isLesser1bit(evaluator,decryptor,encryptor);
+    //test_multiply1bit(evaluator,decryptor,encryptor);
+
+  //Noise Tests
+    Plaintext one("1"); Plaintext zero("0");Plaintext plainResult;
+    cout << "Plaintext : " << one.to_string() << " , " << zero.to_string() << endl;
+    Ciphertext cipherOne; encryptor.encrypt(one,cipherOne);
+    Ciphertext cipherZero; encryptor.encrypt(zero,cipherZero);
+    cout << "Ciphertext created" << endl ;
+    cout << "Noise budget in cipherOne: " << decryptor.invariant_noise_budget(cipherOne) << " bits" << endl;
+    cout << "Noise budget in cipherZero: " << decryptor.invariant_noise_budget(cipherZero) << " bits" << endl <<endl;
+
+    CipherBit cipherBitOne(evaluator,encryptor,cipherOne);
+    CipherBit cipherBitZero(evaluator,encryptor,cipherZero);
+    cout << "CipherBit created" <<endl;
+    cout << "Noise budget in cipherBitOne: " << decryptor.invariant_noise_budget(cipherBitOne.getcipherBit()) << " bits" << endl;
+    cout << "Noise budget in cipherBitZero: " << decryptor.invariant_noise_budget(cipherBitZero.getcipherBit()) << " bits" << endl <<endl;
+
+    cout<< "0 XOR 1 = 1 " << endl;
+    cout << "Noise budget in cipherBitZero: " << decryptor.invariant_noise_budget(cipherBitZero.getcipherBit()) << " bits" << endl;
+    cipherBitZero.XOR(cipherBitOne);
+    cout << "Noise budget in cipherBitZero afer XOR : " << decryptor.invariant_noise_budget(cipherBitZero.getcipherBit()) << " bits" << endl <<endl;
+    cout<< "0 XOR 0 = 0 (avec lui même)" << endl;
+    cout << "Noise budget in cipherBitZero: " << decryptor.invariant_noise_budget(cipherBitZero.getcipherBit()) << " bits" << endl ;
+    cipherBitOne = cipherBitZero;
+
+    cipherBitZero.XOR(cipherBitZero);
+    cout << "Noise budget in cipherBitZero after XOR : " << decryptor.invariant_noise_budget(cipherBitZero.getcipherBit()) << " bits" << endl <<endl;
+
+    cout << "Addition d'une copie de sa version bruitée" << endl;
+    cout << "Noise budget in cipherBitZero: " << decryptor.invariant_noise_budget(cipherBitZero.getcipherBit()) << " bits" << endl;
+    decryptor.decrypt(cipherBitZero.getcipherBit(),plainResult);
+
+    cipherBitZero.add(cipherBitOne);
+    cout << "Noise budget in cipherBitZero after add: " << decryptor.invariant_noise_budget(cipherBitZero.getcipherBit()) << " bits" << endl <<endl;
+    //cout << "Noise budget in cipherBitOne after XOR: " << decryptor.invariant_noise_budget(cipherBitOne.getcipherBit()) << " bits" << endl;
+    //cout << "Noise budget in cipherBitZero after XOR: " << decryptor.invariant_noise_budget(cipherBitZero.getcipherBit()) << " bits" << endl;
+
+    decryptor.decrypt(cipherBitZero.getcipherBit(),plainResult);
+    cout << "Print result : " << plainResult.to_string() << endl;
+
   return 0;
 }

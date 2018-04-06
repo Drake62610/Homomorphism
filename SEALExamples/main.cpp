@@ -9,7 +9,7 @@
 #include <random>
 #include <limits>
 
-#include "seal/seal.h"
+#include <seal/seal.h>
 
 using namespace std;
 using namespace seal;
@@ -98,8 +98,6 @@ void example_performance_mt(int th_count);
 
 int main()
 {
-    cout << "SEAL version: " << SEAL_VERSION_STRING << endl;
-
     while (true)
     {
         cout << "\nSEAL Examples:" << endl << endl;
@@ -185,7 +183,6 @@ void example_basics_i()
     /*
     In this example we demonstrate setting up encryption parameters and other
     relevant objects for performing simple computations on encrypted integers.
-
     SEAL uses the Fan-Vercauteren (FV) homomorphic encryption scheme. We refer to
     https://eprint.iacr.org/2012/144 for full details on how the FV scheme works.
     For better performance, SEAL implements the "FullRNS" optimization of FV, as
@@ -197,15 +194,12 @@ void example_basics_i()
     It is critical to understand how these different parameters behave, how they
     affect the encryption scheme, performance, and the security level. There are
     three encryption parameters that are necessary to set:
-
         - poly_modulus (polynomial modulus);
         - coeff_modulus ([ciphertext] coefficient modulus);
         - plain_modulus (plaintext modulus).
-
     A fourth parameter -- noise_standard_deviation -- has a default value of 3.19
     and should not be necessary to modify unless the user has a specific reason
     to and knows what they are doing.
-
     The encryption scheme implemented in SEAL cannot perform arbitrary computations
     on encrypted data. Instead, each ciphertext has a specific quantity called the
     `invariant noise budget' -- or `noise budget' for short -- measured in bits.
@@ -260,7 +254,6 @@ void example_basics_i()
 
         coeff_modulus_128bit(int)
         coeff_modulus_192bit(int)
-
     for 128-bit and 192-bit security levels. The integer parameter is the degree
     of the polynomial modulus.
 
@@ -284,11 +277,9 @@ void example_basics_i()
 
     each of which gives access to an array of primes of the denoted size. These
     primes are located in the source file util/globals.cpp.
-
     Performance is mainly affected by the size of the polynomial modulus, and the
     number of prime factors in the coefficient modulus. Thus, it is important to
     use as few factors in the coefficient modulus as possible.
-
     In this example we use the default coefficient modulus for a 128-bit security
     level. Concretely, this coefficient modulus consists of only one 56-bit prime
     factor: 0xfffffffff00001.
@@ -306,7 +297,6 @@ void example_basics_i()
     The noise budget in a freshly encrypted ciphertext is
 
         ~ log2(coeff_modulus/plain_modulus) (bits)
-
     and the noise budget consumption in a homomorphic multiplication is of the
     form log2(plain_modulus) + (other terms).
     */
@@ -330,7 +320,6 @@ void example_basics_i()
     plain_modulus. To encrypt for example integers instead, one can use an
     `encoding scheme' to represent the integers as such polynomials. SEAL comes
     with a few basic encoders:
-
     [IntegerEncoder]
     Given an integer base b, encodes integers as plaintext polynomials as follows.
     First, a base-b expansion of the integer is computed. This expansion uses
@@ -352,7 +341,6 @@ void example_basics_i()
     representatives modulo plain_modulus. To create a base-b integer encoder,
     use the constructor IntegerEncoder(plain_modulus, b). If no b is given, b=2
     is used.
-
     [FractionalEncoder]
     The FractionalEncoder encodes fixed-precision rational numbers as follows.
     It expands the number in a given base b, possibly truncating an infinite
@@ -370,7 +358,6 @@ void example_basics_i()
 
     In memory the negative coefficients of the polynomial will be represented as
     their negatives modulo plain_modulus.
-
     [PolyCRTBuilder]
     If plain_modulus is a prime congruent to 1 modulo 2*degree(poly_modulus), the
     plaintext elements can be viewed as 2-by-(degree(poly_modulus) / 2) matrices
@@ -380,7 +367,6 @@ void example_basics_i()
     in more complicated computations this is likely to be by far the most important
     and useful encoder. In example_batching() we show how to use and operate on
     encrypted matrix plaintexts.
-
     For performance reasons, in homomorphic encryption one typically wants to keep
     the plaintext data types as small as possible, which can make it challenging to
     prevent data type overflow in more complicated computations, especially when
@@ -395,7 +381,6 @@ void example_basics_i()
     elements becomes, and choose the plaintext modulus to be larger than this value.
     SEAL comes with an automatic parameter selection tool that can help with this
     task, as is demonstrated in example_parameter_selection().
-
     Here we choose to create an IntegerEncoder with base b=2.
     */
     IntegerEncoder encoder(context.plain_modulus());
@@ -533,7 +518,6 @@ void example_basics_ii()
     /*
     In this example we explain what relinearization is, how to use it, and how
     it affects noise budget consumption.
-
     First we set the parameters, create a SEALContext, and generate the public
     and secret keys. We use slightly larger parameters than be fore to be able
     to do more homomorphic multiplications.
@@ -543,12 +527,10 @@ void example_basics_ii()
 
     /*
     The default coefficient modulus consists of the following primes:
-
         0x7fffffffba0001,
         0x7fffffffaa0001,
         0x7fffffff7e0001,
         0x3fffffffd60001.
-
     The total size is 219 bits.
     */
     parms.set_coeff_modulus(coeff_modulus_128(8192));
@@ -574,7 +556,6 @@ void example_basics_ii()
     There are actually two more types of keys in SEAL: `evaluation keys' and
     `Galois keys'. Here we will discuss evaluation keys, and Galois keys will
     be discussed later in example_batching().
-
     In SEAL, a valid ciphertext consists of two or more polynomials with
     coefficients integers modulo the product of the primes in coeff_modulus.
     The current size of a ciphertext can be found using Ciphertext::size().
@@ -629,40 +610,24 @@ void example_basics_ii()
     after multiplication back to the initial size (2). Thus, relinearizing one
     or both inputs before the next multiplication, or e.g. before serializing the
     ciphertexts, can have a huge positive impact on performance.
-
     Another problem is that the noise budget consumption in multiplication is
     bigger when the input ciphertexts sizes are bigger. In a complicated
     computation the contribution of the sizes to the noise budget consumption
     can actually become the dominant term. We will point this out again below
     once we get to our example.
-
     Relinearization itself has both a computational cost and a noise budget cost.
     These both depend on a parameter called `decomposition bit count', which can
     be any integer at least 1 [dbc_min()] and at most 60 [dbc_max()]. A large
     decomposition bit count makes relinearization fast, but consumes more noise
     budget. A small decomposition bit count can make relinearization slower, but
     might not change the noise budget by any observable amount.
-
-    Relinearization requires a special type of key called `evaluation keys'.
+    Relinearization requires a special type of keys called `evaluation keys'.
     These can be created by the KeyGenerator for any decomposition bit count.
-    To relinearize a ciphertext of size M >= 2 back to size 2, we actually need
-    M-2 evaluation keys. Attempting to relinearize a too large ciphertext with
-    too few evaluation keys will result in an exception being thrown.
-
     We repeat our computation, but this time relinearize after both squarings.
-    Since our ciphertext never grows past size 3 (we relinearize after every
-    multiplication), it suffices to generate only one evaluation key.
-
     First, we need to create evaluation keys. We use a decomposition bit count
     of 16 here, which can be thought of as quite small.
     */
     EvaluationKeys ev_keys16;
-
-    /*
-    This function generates one single evaluation key. Another overload takes
-    the number of keys to be generated as an argument, but one is all we need
-    in this example (see above).
-    */
     keygen.generate_evaluation_keys(16, ev_keys16);
 
     cout << "Encrypting " << plain1.to_string() << ": ";
@@ -709,7 +674,6 @@ void example_basics_ii()
           squarings, the noise budget consumption rate in multiplication
           remains as small as possible. Recall from above that operations
           on larger ciphertexts actually cause more noise growth.
-
     To make matters even more clear, we repeat the computation a third time,
     now using the largest possible decomposition bit count (60). We are not
     measuring the time here, but relinearization with these evaluation keys
@@ -789,7 +753,6 @@ void example_basics_ii()
     correct as integers: they have been reduced modulo plain_modulus, and there
     was no warning sign about this. It might be necessary to carefully analyze
     the computation to make sure such overflow does not occur unexpectedly.
-
     These experiments suggest that an optimal strategy might be to relinearize
     first with evaluation keys with a small decomposition bit count, and later
     with evaluation keys with a larger decomposition bit count (for performance)
@@ -814,7 +777,6 @@ void example_weighted_average()
     much faster than regular multiplications of ciphertexts by ciphertexts.
     Moreover, such `plain multiplications' never increase the ciphertext size,
     which is why we have no need for evaluation keys in this example.
-
     We start by creating encryption parameters, setting up the SEALContext, keys,
     and other relevant objects. Since our computation has multiplicative depth of
     only two, it suffices to use a small poly_modulus.
@@ -1000,7 +962,6 @@ void example_batching()
     bit count. The noise budget consumption behavior of matrix row and column
     rotations is exactly like that of relinearization. Thus, we refer the reader
     to example_basics_ii() for more details.
-
     Here we use a moderate size decomposition bit count.
     */
     GaloisKeys gal_keys;
@@ -1073,7 +1034,6 @@ void example_batching()
     The matrix plaintext is simply given to PolyCRTBuilder as a flattened vector
     of numbers of size slot_count. The first row_size numbers form the first row,
     and the rest form the second row. Here we create the following matrix:
-
         [ 0,  1,  2,  3,  0,  0, ...,  0 ]
         [ 4,  5,  6,  7,  0,  0, ...,  0 ]
     */
@@ -1110,10 +1070,8 @@ void example_batching()
     Operating on the ciphertext results in homomorphic operations being performed
     simultaneously in all 4096 slots (matrix elements). To illustrate this, we
     form another plaintext matrix
-
         [ 1,  2,  1,  2,  1,  2, ..., 2 ]
         [ 1,  2,  1,  2,  1,  2, ..., 2 ]
-
     and compose it into a plaintext.
     */
     vector<uint64_t> pod_matrix2;
@@ -1125,16 +1083,7 @@ void example_batching()
     crtbuilder.compose(pod_matrix2, plain_matrix2);
     cout << "Second input plaintext matrix:" << endl;
     print_matrix(pod_matrix2);
-    vector<uint64_t> first_bit(crtbuilder.slot_count(),0);
-    first_bit[0]=1;
-    vector<uint64_t> second_bit(crtbuilder.slot_count(),0);
-    second_bit[1]=1;
-    //cout << "Vecteur 1 : " << first_bit << endl;
-    //cout << "Vecteur 2 : " << second_bit << endl;
-    print_matrix(first_bit, crtbuilder);
-    //Encode vector
-    Plaintext bit_one;
-    crtbuilder.compose(first_bit,bit_one);
+
     /*
     We now add the second (plaintext) matrix to the encrypted one using another
     new operation -- plain addition -- and square the sum.
@@ -1169,13 +1118,11 @@ void example_batching()
     Note how the operation was performed in one go for each of the elements of the
     matrix. It is possible to achieve incredible performance improvements by using
     this method when the computation is easily vectorizable.
-
     All of our discussion so far could have applied just as well for a simple vector
     data type (not matrix). Now we show how the matrix view of the plaintext can be
     used for more functionality. Namely, it is possible to rotate the matrix rows
     cyclically, and same for the columns (i.e. swap the two rows). For this we need
     the Galois keys that we generated earlier.
-
     We return to the original matrix that we started with.
     */
     encryptor.encrypt(plain_matrix, encrypted_matrix);
@@ -1252,7 +1199,6 @@ void example_parameter_selection()
     simulates plaintext coefficient growth and noise budget consumption in the
     computations. Here we use also the ChooserEncoder to conveniently obtain
     ChooserPoly objects modeling the plaintext coefficients 42, -27, and 1.
-
     Note that we are using the IntegerEncoder with base 3.
     */
     ChooserEncoder chooser_encoder(3);
@@ -1270,7 +1216,6 @@ void example_parameter_selection()
     Normally Evaluator::exponentiate takes the evaluation keys as argument. Since
     no keys exist here, we simply pass the desired decomposition bit count (15)
     to the ChooserEvaluator::exponentiate function.
-
     Here we compute the first term.
     */
     ChooserPoly c_cubed_input = chooser_evaluator.exponentiate(c_input, 3, 15);
@@ -1700,7 +1645,6 @@ void example_performance_mt(int th_count)
     local memory pools using the MemoryPoolHandle class, which can be either
     thread-safe (slower) or thread-unsafe (faster). For example, here we use
     the MemoryPoolHandle class to essentially get thread-local memory pools.
-
     First we set up shared instances of EncryptionParameters, SEALContext,
     KeyGenerator, keys, Encryptor, Decryptor, Evaluator, PolyCRTBuilder.
     After these classes are constructed, they are thread-safe to use.

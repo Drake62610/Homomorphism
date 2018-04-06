@@ -23,6 +23,22 @@ void CipherBit::setcipherBit(Ciphertext a){
 }
 
 //Methods
+void CipherBit::XORdebug(CipherBit b, Decryptor decryptor, EvaluationKeys ev_keys){
+  Ciphertext xored = b.getcipherBit(); //We get the ciphertext of the CipherBit
+  cout << "  Noise budget in xored: " << decryptor.invariant_noise_budget(xored) << " bits" << endl;
+  cout << "  Noise budget in this -> cipherBit: " << decryptor.invariant_noise_budget(this -> cipherBit) << " bits" << endl;
+  (this -> evaluator) -> negate(xored);
+  cout << "  Noise budget in xored after negate: " << decryptor.invariant_noise_budget(xored) << " bits" << endl;
+  (this -> evaluator) -> add(this -> cipherBit,xored);
+  cout << "  Noise budget in this -> cipherBit after add: " << decryptor.invariant_noise_budget(this -> cipherBit) << " bits" << endl;
+  cout << "  Noise budget in xored: " << decryptor.invariant_noise_budget(xored) << " bits" << endl;
+  (this -> evaluator) -> square(this -> cipherBit); //Now this->cipherBit has the XORed result
+  cout << "  Noise budget in this -> cipherBit after square: " << decryptor.invariant_noise_budget(this -> cipherBit) << " bits" << endl;
+  cout << "  Noise budget in xored: " << decryptor.invariant_noise_budget(xored) << " bits" << endl;
+  evaluator -> relinearize(this -> cipherBit, ev_keys);
+  cout << "  Noise budget in this -> cipherBit after relinearization: " << decryptor.invariant_noise_budget(this -> cipherBit) << " bits" << endl;
+  cout << "  Noise budget in xored: " << decryptor.invariant_noise_budget(xored) << " bits" << endl;
+}
 void CipherBit::XOR(CipherBit b){
   Ciphertext xored = b.getcipherBit(); //We get the ciphertext of the CipherBit
   (this -> evaluator) -> negate(xored);
