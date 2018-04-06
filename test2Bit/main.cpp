@@ -177,11 +177,9 @@ void test_add2bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
 
   //Tests
   
-  Cipher2Bit trois(evaluator,encryptor,myCipherBit1,myCipherBit1);
-  /*
+  Cipher2Bit trois(myCipherBit1,myCipherBit1);
   decryptor.decrypt(trois.getCipherBit0().getcipherBit(),plainResult);
   cout << "bit0= " << plainResult.to_string() << endl;
-  */
 
 }
 

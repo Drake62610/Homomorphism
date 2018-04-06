@@ -9,7 +9,7 @@
 class Cipher2Bit{
 public:
   //Constructor
-  Cipher2Bit(seal::Evaluator &evaluator,seal::Encryptor &encryptor,CipherBit a,CipherBit b);
+  Cipher2Bit(CipherBit a,CipherBit b);
   //Getter
   CipherBit getCipherBit0();
   CipherBit getCipherBit1();
@@ -28,7 +28,9 @@ public:
 private:
   CipherBit* bit0;
   CipherBit* bit1;
+  /*
   seal::Evaluator* evaluator; //Use an adress to avoid calling a constructor (witch won't exist)
   seal::Encryptor* encryptor; //Same here
+  */
 };
 #endif
