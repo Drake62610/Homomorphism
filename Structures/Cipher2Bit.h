@@ -23,14 +23,14 @@ public:
     The output is the last carry
   */
   CipherBit add(Cipher2Bit b);
+    CipherBit bitZero;
+  CipherBit bitUn;
 
 
 private:
-  CipherBit* bit0;
-  CipherBit* bit1;
-  /*
+
+  seal::Decryptor* decryptor;
   seal::Evaluator* evaluator; //Use an adress to avoid calling a constructor (witch won't exist)
   seal::Encryptor* encryptor; //Same here
-  */
 };
 #endif
