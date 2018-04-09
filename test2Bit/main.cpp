@@ -192,14 +192,80 @@ void test_add2bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   //trois.print();
   decryptor.decrypt(trois.getCipherBit1().getcipherBit(),plainResult);
   cout << "bit1= " << plainResult.to_string() << endl;
+  cout << "Noise budget in carry after add: " << decryptor.invariant_noise_budget(carry) << " bits" << endl <<endl;
+  cout << "Noise budget in bit0 after add: " << decryptor.invariant_noise_budget(trois.getCipherBit0().getcipherBit()) << " bits" << endl <<endl;
+  cout << "Noise budget in bit1 after add: " << decryptor.invariant_noise_budget(trois.getCipherBit1().getcipherBit()) << " bits" << endl <<endl;
+
+}
+
+void test_XOR2bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
+  cout<<"Test xor 2 bit"<<endl;
+  Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
+  Plaintext plainResult("0");
+  Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
+  Ciphertext myCipher0; encryptor.encrypt(myPlaintext0,myCipher0);
+  CipherBit myCipherBit1(evaluator,encryptor, myCipher1);
+  CipherBit myCipherBit0(evaluator,encryptor, myCipher0);
+
+  //Tests
+  Cipher2Bit zero(myCipherBit0,myCipherBit0);
+  Cipher2Bit un(myCipherBit1,myCipherBit0);
+  Cipher2Bit deux(myCipherBit0,myCipherBit1);
+  Cipher2Bit trois(myCipherBit1,myCipherBit1);
+  Cipher2Bit result(myCipherBit1,myCipherBit1);
+
+  cout<<"xor entre 0 et 0"<<endl;
+  result=zero.copy();
+  result.XOR(zero);
+  decryptor.decrypt(result.getCipherBit0().getcipherBit(),plainResult);
+  cout << "bit0= " << plainResult.to_string() << endl;
+  decryptor.decrypt(result.getCipherBit1().getcipherBit(),plainResult);
+  cout << "bit1= " << plainResult.to_string() << endl;
+
+  cout<<"xor entre 0 et 1"<<endl;
+  result=zero.copy();
+  result.XOR(un);
+  decryptor.decrypt(result.getCipherBit0().getcipherBit(),plainResult);
+  cout << "bit0= " << plainResult.to_string() << endl;
+  decryptor.decrypt(result.getCipherBit1().getcipherBit(),plainResult);
+  cout << "bit1= " << plainResult.to_string() << endl;
+
+  cout<<"xor entre 0 et 3"<<endl;
+  result=zero.copy();
+  result.XOR(trois);
+  decryptor.decrypt(result.getCipherBit0().getcipherBit(),plainResult);
+  cout << "bit0= " << plainResult.to_string() << endl;
+  decryptor.decrypt(result.getCipherBit1().getcipherBit(),plainResult);
+  cout << "bit1= " << plainResult.to_string() << endl;
+
+  cout<<"xor entre 1 et 1"<<endl;
+  result=un.copy();
+  result.XOR(un);
+  decryptor.decrypt(result.getCipherBit0().getcipherBit(),plainResult);
+  cout << "bit0= " << plainResult.to_string() << endl;
+  decryptor.decrypt(result.getCipherBit1().getcipherBit(),plainResult);
+  cout << "bit1= " << plainResult.to_string() << endl;
+
+  cout<<"xor entre 1 et 2"<<endl;
+  result=un.copy();
+  result.XOR(deux);
+  decryptor.decrypt(result.getCipherBit0().getcipherBit(),plainResult);
+  cout << "bit0= " << plainResult.to_string() << endl;
+  decryptor.decrypt(result.getCipherBit1().getcipherBit(),plainResult);
+  cout << "bit1= " << plainResult.to_string() << endl;
+
+
+  //cout << "Noise budget in carry after add: " << decryptor.invariant_noise_budget(carry) << " bits" << endl <<endl;
+  cout << "Noise budget in bit0 after add: " << decryptor.invariant_noise_budget(trois.getCipherBit0().getcipherBit()) << " bits" << endl <<endl;
+  cout << "Noise budget in bit1 after add: " << decryptor.invariant_noise_budget(trois.getCipherBit1().getcipherBit()) << " bits" << endl <<endl;
 
 }
 
 int main(){
   //Configuration des paramètres homomorphiques
     EncryptionParameters parms;
-    parms.set_poly_modulus("1x^8192 + 1");
-    parms.set_coeff_modulus(coeff_modulus_128(8192));
+    parms.set_poly_modulus("1x^16384 + 1");
+    parms.set_coeff_modulus(coeff_modulus_128(16384));
     parms.set_plain_modulus(1<<2);
   //Validation des paramètres et création du contexte
     SEALContext context(parms);
@@ -292,6 +358,7 @@ int main(){
   //test_isGreaterOrEqual1bit(evaluator,decryptor,encryptor);
   //test_isLesser1bit(evaluator,decryptor,encryptor);
   //test_multiply1bit(evaluator,decryptor,encryptor);
-  test_add2bit(evaluator,decryptor,encryptor);
+  //test_add2bit(evaluator,decryptor,encryptor);
+  test_XOR2bit(evaluator,decryptor,encryptor);
   return 0;
 }

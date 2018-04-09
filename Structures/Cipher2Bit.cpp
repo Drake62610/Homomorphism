@@ -26,7 +26,6 @@ void Cipher2Bit::setCipherBit1(CipherBit &b){
 
 
 //Methods
-
 CipherBit Cipher2Bit::add(Cipher2Bit b){
 	cout<<"on add"<<endl;
 	Plaintext plainResult("0");
@@ -35,4 +34,12 @@ CipherBit Cipher2Bit::add(Cipher2Bit b){
 	carry=this->bitUn.add(carry);
 	CipherBit carryUnused = carry.add(this->bitUn.add(b.getCipherBit1()));
 	return carry;
+}
+Cipher2Bit Cipher2Bit::copy(){
+	Cipher2Bit copy(this->bitZero,this->bitUn);
+	return copy;
+}
+void Cipher2Bit::XOR(Cipher2Bit b){
+	this->bitZero.XOR(b.getCipherBit0());
+	this->bitUn.XOR(b.getCipherBit1());
 }

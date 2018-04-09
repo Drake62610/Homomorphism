@@ -23,7 +23,9 @@ public:
     The output is the last carry
   */
   CipherBit add(Cipher2Bit b);
-    CipherBit bitZero;
+  Cipher2Bit copy();
+  void XOR(Cipher2Bit b);
+  CipherBit bitZero;
   CipherBit bitUn;
 
 
