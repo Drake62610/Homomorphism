@@ -13,6 +13,7 @@ public:
             Ciphertext to stock in this CipherBit
     Noise : no noise are consumed in this constructor
   */
+  CipherBit();
   CipherBit(seal::Evaluator &evaluator,seal::Encryptor &encryptor, seal::Ciphertext);
   //Getter
   seal::Ciphertext getcipherBit();
@@ -52,7 +53,7 @@ public:
     Output : A Cipherbit containing an encrypted
     "1" if True or "0" if false
   */
-  CipherBit isLesser(CipherBit b
+  CipherBit isLesser(CipherBit b);
   /*
     Input : the CipherBit to compare using the ">=" operation
     Output : A Cipherbit containing an encrypted
