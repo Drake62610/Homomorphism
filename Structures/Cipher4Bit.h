@@ -1,5 +1,5 @@
-#ifndef DEFCIPHER2BIT
-#define DEFCIPHER2BIT
+#ifndef DEFCIPHER4BIT
+#define DEFCIPHER4BIT
 
 #include <string>
 #include <vector>
@@ -11,8 +11,8 @@ public:
   //Constructor
   Cipher4Bit(Cipher2Bit a,Cipher2Bit b);
   //Getter
-  Cipher4Bit getPartieZero();
-  Cipher4Bit getPartieUne();
+  Cipher2Bit getPartieZero();
+  Cipher2Bit getPartieUne();
   //Setter
   void setPartieZero(Cipher2Bit a);
   void setPartieUne(Cipher2Bit b);

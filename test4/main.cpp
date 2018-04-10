@@ -559,7 +559,7 @@ void test_multiply2bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryp
 }
 
 //Test4Bits
-/*void test_4Bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
+void test_4Bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   cout<<"Test < 2 bit"<<endl;
   Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
   Plaintext plainResult("0");
@@ -574,11 +574,11 @@ void test_multiply2bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryp
   Cipher2Bit deux(myCipherBit0,myCipherBit1);
   Cipher2Bit trois(myCipherBit1,myCipherBit1);
 
-  Cipher4Bit myZero(zero,zero);
+  Cipher4Bit myZero(deux,zero);
   print2Bit(decryptor,myZero.getPartieZero());
   print2Bit(decryptor,myZero.getPartieUne());
 
-}*/
+}
 
 int main(){
   //Configuration des paramètres homomorphiques
@@ -617,7 +617,7 @@ int main(){
   //test_isGreaterOrEqual2bit(evaluator,decryptor,encryptor);
   //test_multiply2bit(evaluator,decryptor,encryptor);
 
-  //test_4Bit(evaluator,decryptor,encryptor);
+  test_4Bit(evaluator,decryptor,encryptor);
 
   return 0;
 }
