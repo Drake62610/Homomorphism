@@ -25,12 +25,21 @@ public:
   CipherBit add(Cipher2Bit b);
   Cipher2Bit copy();
   void XOR(Cipher2Bit b);
-  CipherBit bitZero;
-  CipherBit bitUn;
+  void reverse();
+  CipherBit multiplyComposant();
+  /*
+    a<b?
+    return (a1<b1)+(a1.XOR(b1).reverse()*(a0<b0))
+  */
+  CipherBit isLesser(Cipher2Bit b);
+  CipherBit isGreaterOrEqual(Cipher2Bit b);
+  Cipher2Bit multiply(Cipher2Bit b);
+
 
 
 private:
-
+  CipherBit bitZero;
+  CipherBit bitUn;
   seal::Decryptor* decryptor;
   seal::Evaluator* evaluator; //Use an adress to avoid calling a constructor (witch won't exist)
   seal::Encryptor* encryptor; //Same here

@@ -43,3 +43,38 @@ void Cipher2Bit::XOR(Cipher2Bit b){
 	this->bitZero.XOR(b.getCipherBit0());
 	this->bitUn.XOR(b.getCipherBit1());
 }
+void Cipher2Bit::reverse(){
+	this->bitZero.reverse();
+	this->bitUn.reverse();
+}
+CipherBit Cipher2Bit::multiplyComposant(){
+	CipherBit result=this->bitZero;
+	result.multiply(this->bitUn);
+	return result;
+}
+CipherBit Cipher2Bit::isLesser(Cipher2Bit b){
+	CipherBit tmp=this->bitUn.copy();
+	tmp.XOR(b.getCipherBit1());
+	tmp.reverse();
+	tmp.multiply(this->bitZero.isLesser(b.getCipherBit0()));
+	tmp.add(this->bitUn.isLesser(b.getCipherBit1()));
+	return tmp;
+}
+CipherBit Cipher2Bit::isGreaterOrEqual(Cipher2Bit b){
+	CipherBit result=this->isLesser(b);
+	result.reverse();
+	return result;
+}
+
+Cipher2Bit Cipher2Bit::multiply(Cipher2Bit b){
+	CipherBit tmp0=this->bitZero.copy();
+	CipherBit tmp1=this->bitUn.copy();
+	tmp0.multiply(b.getCipherBit1());
+	tmp1.multiply(b.getCipherBit1());
+	this->bitZero.multiply(b.getCipherBit0());
+	this->bitUn.multiply(b.getCipherBit0());
+	CipherBit carry=this->bitUn.add(tmp0);
+	carry=tmp1.add(carry);
+	Cipher2Bit carry2(tmp1,carry);
+	return carry2;
+}
