@@ -23,13 +23,25 @@ public:
     The output is the last carry
   */
   CipherBit add(Cipher2Bit b);
-
-
-  CipherBit* bit0;
-  CipherBit* bit1;
+  Cipher2Bit copy();
+  void XOR(Cipher2Bit b);
+  void reverse();
+  CipherBit multiplyComposant();
   /*
-  seal::Evaluator* evaluator; //Use an adress to avoid calling a constructor (which won't exist)
-  seal::Encryptor* encryptor; //Same here
+    a<b?
+    return (a1<b1)+(a1.XOR(b1).reverse()*(a0<b0))
   */
+  CipherBit isLesser(Cipher2Bit b);
+  CipherBit isGreaterOrEqual(Cipher2Bit b);
+  Cipher2Bit multiply(Cipher2Bit b);
+
+
+
+private:
+  CipherBit bitZero;
+  CipherBit bitUn;
+  seal::Decryptor* decryptor;
+  seal::Evaluator* evaluator; //Use an adress to avoid calling a constructor (witch won't exist)
+  seal::Encryptor* encryptor; //Same here
 };
 #endif
