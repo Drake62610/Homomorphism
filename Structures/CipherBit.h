@@ -9,11 +9,14 @@ class CipherBit{
 public:
   //Constructor
   /*
+    Empty constructor wich will be called by the other classes
+  */
+  CipherBit();
+  /*
     Input : evaluator and encryptor from the seal context, needed to use public key and do seal Operations
             Ciphertext to stock in this CipherBit
     Noise : no noise are consumed in this constructor
   */
-  CipherBit();
   CipherBit(seal::Evaluator &evaluator,seal::Encryptor &encryptor, seal::Ciphertext);
   //Getter
   seal::Ciphertext getcipherBit();
@@ -39,9 +42,7 @@ public:
   */
   CipherBit add(CipherBit b);
   /*
-    Output : The opposite bit of this->cipherBit
-    this->cipherBit will be override by the result
-    We will XOR with "1"
+    Output : The not gate computed using 1- (this -> CipherBit)
   */
   void reverse();
   /*

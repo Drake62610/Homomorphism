@@ -23,25 +23,48 @@ public:
     The output is the last carry
   */
   CipherBit add(Cipher2Bit b);
+  /*
+    Output : A Cipher2Bit wich is a copy of "this".
+  */
   Cipher2Bit copy();
+  /*
+    Input : b is the Cipher2Bit to XOR to "this".
+    this will be override by the result
+    XOR will be comuted using the methods in CipherBit
+  */
   void XOR(Cipher2Bit b);
+  /*
+    Output : The not gate computed using the CiberBit methods on our two parts
+  */
   void reverse();
+  /*
+    Output : multiply every bit between them and put it in a CipherBit
+  */
   CipherBit multiplyComposant();
   /*
-    a<b?
-    return (a1<b1)+(a1.XOR(b1).reverse()*(a0<b0))
+    Input : the Cipher2Bit to compare using the ">=" operation
+    Output : A Cipherbit containing an encrypted "1" if True or "0" if false
+    a<b is computing using this boolean equation :
+    (a1<b1)+(a1.XOR(b1).reverse()*(a0<b0))
   */
   CipherBit isLesser(Cipher2Bit b);
+  /*
+    Input : the CipherBit to compare using the ">=" operation
+    Output : A Cipher2bit containing an encrypted
+    "1" if True or "0" if false
+  */
   CipherBit isGreaterOrEqual(Cipher2Bit b);
+  /*
+    Input : b is the Cipherbit to multiply
+    this will be override by the result
+    The result will look like BA where B and A are two Cipher2bit
+    Output : The B part wich will be considered as the "carry"
+    Tha A part will override the Cipher2bit
+  */
   Cipher2Bit multiply(Cipher2Bit b);
-
-
-
+  
 private:
-  CipherBit bitZero;
+  CipherBit bitZero; //A cipher2Bit is composed of two part which are two Cipherbit
   CipherBit bitUn;
-  seal::Decryptor* decryptor;
-  seal::Evaluator* evaluator; //Use an adress to avoid calling a constructor (witch won't exist)
-  seal::Encryptor* encryptor; //Same here
 };
 #endif

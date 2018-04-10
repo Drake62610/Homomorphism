@@ -184,7 +184,7 @@ void test_add2bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   CipherBit myCipherBit0(evaluator,encryptor, myCipher0);
 
   //Tests
-  
+
   Cipher2Bit trois(myCipherBit1,myCipherBit1);
   cout<<"on a un trois"<<endl;
   print2Bit(decryptor,trois);
@@ -192,7 +192,7 @@ void test_add2bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   Ciphertext carry =trois.add(trois).getcipherBit();
   decryptor.decrypt(carry,plainResult);
   cout << "carry= " << plainResult.to_string() << endl;
-  
+
   cout<<"apres addition avec 3"<<endl;
   print2Bit(decryptor,trois);
   cout << "Noise budget in carry after add: " << decryptor.invariant_noise_budget(carry) << " bits" << endl <<endl;
@@ -266,7 +266,7 @@ void test_reverse2bit(Evaluator evaluator, Decryptor decryptor,Encryptor encrypt
   CipherBit myCipherBit0(evaluator,encryptor, myCipher0);
 
   //Tests
-  
+
   Cipher2Bit trois(myCipherBit1,myCipherBit1);
   cout<<"on a un trois"<<endl;
   print2Bit(decryptor,trois);
@@ -296,7 +296,7 @@ void test_multiplyComposant2bit(Evaluator evaluator, Decryptor decryptor,Encrypt
   cout << "bit0= " << plainResult.to_string();
   decryptor.decrypt(trois.getCipherBit1().getcipherBit(),plainResult);
   cout << " bit1= " << plainResult.to_string() << endl;
-  
+
   result=trois.multiplyComposant();
   decryptor.decrypt(result.getcipherBit(),plainResult);
   cout << "multiply result of '3'= " << plainResult.to_string() << endl;
@@ -306,7 +306,7 @@ void test_multiplyComposant2bit(Evaluator evaluator, Decryptor decryptor,Encrypt
   cout << "bit0= " << plainResult.to_string();
   decryptor.decrypt(deux.getCipherBit1().getcipherBit(),plainResult);
   cout << " bit1= " << plainResult.to_string() << endl;
-  
+
   result=deux.multiplyComposant();
   decryptor.decrypt(result.getcipherBit(),plainResult);
   cout << "multiply result of '2'= " << plainResult.to_string() << endl;
@@ -326,7 +326,7 @@ void test_multiplyComposant2bit(Evaluator evaluator, Decryptor decryptor,Encrypt
   cout << "bit0= " << plainResult.to_string();
   decryptor.decrypt(zero.getCipherBit1().getcipherBit(),plainResult);
   cout << " bit1= " << plainResult.to_string() << endl;
-  
+
   result=zero.multiplyComposant();
   decryptor.decrypt(result.getcipherBit(),plainResult);
   cout << "multiply result of '0'= " << plainResult.to_string() << endl;
@@ -477,7 +477,7 @@ void test_multiply2bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryp
   print2Bit(decryptor,result);
   cout<<"carry  = ";
   print2Bit(decryptor,carry);
- 
+
   cout<<"0x1"<<endl;
   result=zero.copy();
   carry=result.multiply(un);
@@ -569,83 +569,12 @@ int main(){
     KeyGenerator keygen(context);
     PublicKey public_key = keygen.public_key();
     SecretKey secret_key = keygen.secret_key();
-    //GaloisKeys gal_keys;
-    //keygen.generate_galois_keys(30, gal_keys);
     EvaluationKeys ev_keys;
     keygen.generate_evaluation_keys(30, ev_keys);
   //Homomorphic Objects
     Encryptor encryptor(context, public_key);
     Evaluator evaluator(context);
     Decryptor decryptor(context, secret_key);
-
-
-
-    /*
-  cout<<"firstTest"<<endl;
-  Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
-  Plaintext plainResult("0");
-  Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
-  Ciphertext myCipher0; encryptor.encrypt(myPlaintext0,myCipher0);
-  CipherBit myCipherBit1(evaluator,encryptor, myCipher1);
-  CipherBit myCipherBit0(evaluator,encryptor, myCipher0);
-
-  //Tests
-  Cipher2Bit b(myCipherBit1,myCipherBit1);
-  Cipher2Bit trois(myCipherBit1,myCipherBit0);
-  cout<<"on a un trois"<<endl;
-  decryptor.decrypt(trois.getCipherBit0().getcipherBit(),plainResult);
-  cout << "bit0= " << plainResult.to_string() << endl;
-  decryptor.decrypt(trois.getCipherBit1().getcipherBit(),plainResult);
-  cout << "bit1= " << plainResult.to_string() << endl;
-
-    cout<<"on add1"<<endl;
-    //Plaintext plainResult("6");
-    CipherBit carry=b.getCipherBit0().copy();
-    cout << "Noise budget in cipherBitZero after add: " << decryptor.invariant_noise_budget(carry.getcipherBit()) << " bits" << endl <<endl;
-    carry=trois.bitZero.add(b.getCipherBit0());
-    cout<<"on add2"<<endl;
-    cout << "Noise budget in cipherBitZero after add: " << decryptor.invariant_noise_budget(carry.getcipherBit()) << " bits" << endl <<endl;
-    decryptor.decrypt((Ciphertext)carry.getcipherBit(),plainResult);
-    cout << "Noise budget in cipherBitZero after add: " << decryptor.invariant_noise_budget(carry.getcipherBit()) << " bits" << endl <<endl;
-    cout<<"carry1= "<<plainResult.to_string()<<endl;
-
-    Ciphertext myCiphertmp;
-    encryptor.encrypt(plainResult,myCiphertmp);
-    CipherBit carry2(evaluator,encryptor, myCiphertmp);
-    cout << "Noise budget in cipherBitZero after add: " << decryptor.invariant_noise_budget(carry2.getcipherBit()) << " bits" << endl <<endl;
-    carry2=trois.bitUn.add(carry2);
-    cout<<"on add"<<endl;
-    cout << "Noise budget in cipherBitZero after add: " << decryptor.invariant_noise_budget(carry2.getcipherBit()) << " bits" << endl <<endl;
-    CipherBit carryUnused = carry2.add(trois.bitUn.add(b.getCipherBit1()));
-    cout<<"on add"<<endl;
-    decryptor.decrypt((Ciphertext)carry2.getcipherBit(),plainResult);
-    cout << "Noise budget in cipherBitZero after add: " << decryptor.invariant_noise_budget(carry2.getcipherBit()) << " bits" << endl <<endl;
-    cout<<"carry2= "<<plainResult.to_string()<<endl;
-    */
-  //Test
-  /*
-  Plaintext myPlaintext1("1");
-  Plaintext myPlaintext0("0");
-  Ciphertext myCipher; encryptor.encrypt(myPlaintext1,myCipher);
-  Ciphertext myCipher2; encryptor.encrypt(myPlaintext0,myCipher2);
-  CipherBit myFirstBit(evaluator,encryptor, myCipher);
-  CipherBit myFirstBit2(evaluator,encryptor, myCipher2);
-  */
-  //myFirstBit.multiply(myFirstBit);
-  //myFirstBit.reverse();
-  /*
-  decryptor.decrypt(myFirstBit.getcipherBit(),myPlaintext1);
-  cout << myPlaintext1.to_string() <<endl;
-
-  CipherBit tmp=myFirstBit.isLesser(myFirstBit2);
-  */
-  //tmp.reverse();
-
-  /*
-  Plaintext plainResult;
-  decryptor.decrypt(tmp.getcipherBit(),plainResult);
-  cout << "1 >= 0 " << plainResult.to_string() << endl;
-  */
 
   //Test with function
   //test_xor1bit(evaluator,decryptor,encryptor);
