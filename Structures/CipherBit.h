@@ -21,6 +21,9 @@ public:
   void setcipherBit(seal::Ciphertext a);
 
   //Methods
+  /*
+    A methods that will display at each stage of the XOR the noise, useful for debug
+  */
   void XORdebug(CipherBit b, seal::Decryptor decryptor, seal::EvaluationKeys ev_keys);
   /*
     Input : b is the Cipherbit to XOR to this->cipherBit
@@ -40,19 +43,28 @@ public:
     We will XOR with "1"
   */
   void reverse();
+  /*
+    Output : A CipherBit wich is a copy of "this".
+  */
   CipherBit copy();
   /*
-    Input : the CipherBit to compare with
+    Input : the CipherBit to compare using the "<" operation
     Output : A Cipherbit containing an encrypted
     "1" if True or "0" if false
   */
-  CipherBit isLesser(CipherBit b);
+  CipherBit isLesser(CipherBit b
+  /*
+    Input : the CipherBit to compare using the ">=" operation
+    Output : A Cipherbit containing an encrypted
+    "1" if True or "0" if false
+  */
   CipherBit isGreaterOrEqual(CipherBit b);
-  void multiply(CipherBit b);
   /*
     Input : b is the Cipherbit to multiply to this->cipherBit
     this->cipherBit will be override by the result
   */
+  void multiply(CipherBit b);
+
 
 private:
   seal::Ciphertext cipherBit; //A cipherbit is composed by one Ciphertext wich will either be the polynomial "0" or "1"

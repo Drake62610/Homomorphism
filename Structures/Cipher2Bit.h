@@ -25,11 +25,10 @@ public:
   CipherBit add(Cipher2Bit b);
 
 
-private:
   CipherBit* bit0;
   CipherBit* bit1;
   /*
-  seal::Evaluator* evaluator; //Use an adress to avoid calling a constructor (witch won't exist)
+  seal::Evaluator* evaluator; //Use an adress to avoid calling a constructor (which won't exist)
   seal::Encryptor* encryptor; //Same here
   */
 };

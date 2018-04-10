@@ -39,6 +39,7 @@ void CipherBit::XORdebug(CipherBit b, Decryptor decryptor, EvaluationKeys ev_key
   cout << "  Noise budget in this -> cipherBit after relinearization: " << decryptor.invariant_noise_budget(this -> cipherBit) << " bits" << endl;
   cout << "  Noise budget in xored: " << decryptor.invariant_noise_budget(xored) << " bits" << endl;
 }
+
 void CipherBit::XOR(CipherBit b){
   Ciphertext xored = b.getcipherBit(); //We get the ciphertext of the CipherBit
   (this -> evaluator) -> negate(xored);
@@ -66,6 +67,7 @@ void CipherBit::reverse(){
 CipherBit CipherBit::copy(){
   return CipherBit(*evaluator,*encryptor,(Ciphertext)cipherBit);
 }
+
 CipherBit CipherBit::isLesser(CipherBit b){
 	CipherBit tmp= this->copy();
 	tmp.reverse();
@@ -78,6 +80,7 @@ CipherBit CipherBit::isGreaterOrEqual(CipherBit b){
   tmp.reverse();
   return tmp;
 }
+
 void CipherBit::multiply(CipherBit b){
   Ciphertext mult = b.getcipherBit();
   Ciphertext copy = this -> cipherBit;

@@ -17,7 +17,7 @@ void print_parameters(const SEALContext &context)
     /*
     Print the size of the true (product) coefficient modulus
     */
-    cout << "| coeff_modulus size: " 
+    cout << "| coeff_modulus size: "
         << context.total_coeff_modulus().significant_bit_count() << " bits" << endl;
 
     cout << "| plain_modulus: " << context.plain_modulus().value() << endl;
@@ -33,15 +33,18 @@ const string test_unitaire(bool condition){
         return "Faux";
     }
 }
-
+/*
+  Programme qui montre comment parametrer et comment multiplier
+  et additionner dans le domaine homomorphique
+*/
 int main(){
-//###Parametrage#### 
+//###Parametrage####
     //Configuration des paramètre homomorphiques
 	EncryptionParameters parms;
 	parms.set_poly_modulus("1x^8192 + 1");
 	parms.set_coeff_modulus(coeff_modulus_128(8192));
 	parms.set_plain_modulus(65537);
-	
+
     //Validation des paramètres et création du contexte
 	SEALContext context(parms);
 	print_parameters(context);
@@ -69,7 +72,7 @@ int main(){
     cout << "Encodage de " << b << " en polynome : \n" << plain2.to_string() << endl;
 
     Ciphertext encrypted1, encrypted2;
-    encryptor.encrypt(plain1, encrypted1); 
+    encryptor.encrypt(plain1, encrypted1);
     encryptor.encrypt(plain2, encrypted2);
     cout << "Encryption Réussie" << endl;
 
@@ -93,11 +96,6 @@ int main(){
 
     cout << "Somme executée avec succès : " << test_unitaire(bool_sum) << endl;
     cout << "Multiplication executée avec succès : " << test_unitaire(bool_prod) << endl;
-
-
-
+    
 	return 0;
 }
-
-
-
