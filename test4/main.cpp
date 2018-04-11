@@ -560,7 +560,7 @@ void test_multiply2bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryp
 
 //Test4Bits
 void test_4Bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
-  cout<<"Test < 2 bit"<<endl;
+  cout<<"Test Structure 4 bit"<<endl;
   Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
   Plaintext plainResult("0");
   Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
@@ -577,14 +577,34 @@ void test_4Bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   Cipher4Bit myZero(deux,zero);
   print2Bit(decryptor,myZero.getPartieZero());
   print2Bit(decryptor,myZero.getPartieUne());
+}
+void test_add4Bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
+  cout<<"Test Structure 4 bit"<<endl;
+  Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
+  Plaintext plainResult("0");
+  Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
+  Ciphertext myCipher0; encryptor.encrypt(myPlaintext0,myCipher0);
+  CipherBit myCipherBit1(evaluator,encryptor, myCipher1);
+  CipherBit myCipherBit0(evaluator,encryptor, myCipher0);
 
+  //Tests
+  Cipher2Bit zero(myCipherBit0,myCipherBit0);
+  Cipher2Bit un(myCipherBit1,myCipherBit0);
+  Cipher2Bit deux(myCipherBit0,myCipherBit1);
+  Cipher2Bit trois(myCipherBit1,myCipherBit1);
+
+  Cipher4Bit huit(deux,zero);
+  Cipher4Bit quinze(trois,trois);
+  CipherBit carry=(huit.add(quinze)).copy();
+  print2Bit(decryptor,huit.getPartieZero());
+  print2Bit(decryptor,huit.getPartieUne());
 }
 
 int main(){
   //Configuration des paramètres homomorphiques
     EncryptionParameters parms;
-    parms.set_poly_modulus("1x^8192 + 1");
-    parms.set_coeff_modulus(coeff_modulus_128(8192));
+    parms.set_poly_modulus("1x^16384 + 1");
+    parms.set_coeff_modulus(coeff_modulus_128(16384));
     parms.set_plain_modulus(1<<2);
   //Validation des paramètres et création du contexte
     SEALContext context(parms);
@@ -617,7 +637,8 @@ int main(){
   //test_isGreaterOrEqual2bit(evaluator,decryptor,encryptor);
   //test_multiply2bit(evaluator,decryptor,encryptor);
 
-  test_4Bit(evaluator,decryptor,encryptor);
+  //test_4Bit(evaluator,decryptor,encryptor);
+  test_add4Bit(evaluator,decryptor,encryptor);
 
   return 0;
 }
