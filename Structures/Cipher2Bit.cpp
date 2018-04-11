@@ -3,6 +3,7 @@
 using namespace std;
 using namespace seal;
 //Constructor
+Cipher2Bit::Cipher2Bit(){};
 Cipher2Bit::Cipher2Bit(CipherBit a,CipherBit b){
 	(this->bitZero)=a.copy();
 	(this->bitUn)=b.copy();
@@ -27,8 +28,6 @@ void Cipher2Bit::setCipherBit1(CipherBit &b){
 
 //Methods
 CipherBit Cipher2Bit::add(Cipher2Bit b){
-	cout<<"on add"<<endl;
-	Plaintext plainResult("0");
 	CipherBit carry=b.getCipherBit0().copy();
 	carry=this->bitZero.add(b.getCipherBit0());
 	carry=this->bitUn.add(carry);

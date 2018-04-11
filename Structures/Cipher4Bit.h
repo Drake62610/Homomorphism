@@ -17,6 +17,14 @@ public:
   void setPartieZero(Cipher2Bit a);
   void setPartieUne(Cipher2Bit b);
 
+  //Methods
+  /*
+    Input : b is the Cipher4Bit to add to the current cipher4Bit
+    The cipher4Bit will be override by the result
+    The output is the last carry
+  */
+  CipherBit add(Cipher4Bit b);
+
 private:
   Cipher2Bit partieZero;
   Cipher2Bit partieUne;

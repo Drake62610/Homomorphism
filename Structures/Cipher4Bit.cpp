@@ -24,5 +24,15 @@ void Cipher4Bit::setPartieUne(Cipher2Bit b){
 	this->partieUne=b.copy();
 }
 
-
 //Methods
+CipherBit Cipher4Bit::add(Cipher4Bit b){
+	Plaintext myPlaintext0("0");
+	Ciphertext myCipher0;
+	this->partieZero.getCipherBit0().getEncryptor()->encrypt(myPlaintext0,myCipher0);
+	CipherBit myCipherBit0(*(this->partieZero.getCipherBit0().getEvaluator()),*this->partieZero.getCipherBit0().getEncryptor(), myCipher0);
+	Cipher2Bit carry(myCipherBit0,myCipherBit0);
+	carry.getCipherBit0()=this->partieZero.add(b.getPartieZero());
+	carry.getCipherBit0()=this->partieUne.add(carry);
+	myCipherBit0=carry.getCipherBit0().add(this->partieUne.add(b.getPartieUne()));
+	return carry.getCipherBit0();
+}

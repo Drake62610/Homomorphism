@@ -18,6 +18,9 @@ Ciphertext CipherBit::getcipherBit(){
 Evaluator* CipherBit::getEvaluator(){
   return this->evaluator;
 }
+Encryptor* CipherBit::getEncryptor(){
+  return this->encryptor;
+}
 //Setter
 void CipherBit::setcipherBit(Ciphertext a){
   this -> cipherBit = a;

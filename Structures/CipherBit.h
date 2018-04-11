@@ -21,6 +21,7 @@ public:
   //Getter
   seal::Ciphertext getcipherBit();
   seal::Evaluator* getEvaluator();
+  seal::Encryptor* getEncryptor();
   //Setter
   void setcipherBit(seal::Ciphertext a);
 

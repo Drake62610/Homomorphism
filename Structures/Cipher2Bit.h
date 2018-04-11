@@ -9,6 +9,7 @@
 class Cipher2Bit{
 public:
   //Constructor
+  Cipher2Bit();
   Cipher2Bit(CipherBit a,CipherBit b);
   //Getter
   CipherBit getCipherBit0();
