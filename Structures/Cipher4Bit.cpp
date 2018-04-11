@@ -36,3 +36,46 @@ CipherBit Cipher4Bit::add(Cipher4Bit b){
 	myCipherBit0=carry.getCipherBit0().add(this->partieUne.add(b.getPartieUne()));
 	return carry.getCipherBit0();
 }
+Cipher4Bit Cipher4Bit::copy(){
+	Cipher4Bit copy(this->partieZero,this->partieUne);
+	return copy;
+}
+void Cipher4Bit::XOR(Cipher4Bit b){
+	this->partieZero.XOR(b.getPartieZero());
+	this->partieUne.XOR(b.getPartieUne());
+}
+void Cipher4Bit::reverse(){
+	this->partieZero.reverse();
+	this->partieUne.reverse();
+}
+CipherBit Cipher4Bit::multiplyComposant(){
+	CipherBit result=this->partieZero.multiplyComposant();
+	result.multiply(this->partieUne.multiplyComposant());
+	return result;
+}
+CipherBit Cipher4Bit::isLesser(Cipher4Bit b){
+	Cipher2Bit tmp=this->partieUne.copy();
+	tmp.XOR(b.getPartieUne());
+	tmp.reverse();
+	CipherBit result=tmp.multiplyComposant();
+	result.multiply(this->partieZero.isLesser(b.getPartieZero()));
+	result.add(this->partieUne.isLesser(b.getPartieUne()));
+	return result;
+}
+CipherBit Cipher4Bit::isGreaterOrEqual(Cipher4Bit b){
+	CipherBit result=this->isLesser(b);
+	result.reverse();
+	return result;
+}
+/*Cipher4Bit Cipher4Bit::multiply(Cipher4Bit b){
+	Cipher2Bit tmp0=this->partieZero.copy();
+	Cipher2Bit tmp1=this->partieUne.copy();
+	tmp0.multiply(b.getPartieZero());
+	tmp1.multiply(b.getPartieUne());
+	this->partieZero.multiply(b.getPartieZero());
+	this->partieUne.multiply(b.getPartieUne());
+	CipherBit carry=this->bitUn.add(tmp0);
+	carry=tmp1.add(carry);
+	Cipher2Bit carry2(tmp1,carry);
+	return carry2;
+}*/

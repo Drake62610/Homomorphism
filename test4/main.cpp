@@ -598,6 +598,10 @@ void test_add4Bit(Evaluator evaluator, Decryptor decryptor,Encryptor encryptor){
   CipherBit carry=(huit.add(quinze)).copy();
   print2Bit(decryptor,huit.getPartieZero());
   print2Bit(decryptor,huit.getPartieUne());
+
+  cout<<"islesser"<<endl;
+  CipherBit tmp=huit.isLesser(quinze);
+  decryptor.decrypt(tmp.getcipherBit(),plainResult);
 }
 
 int main(){
