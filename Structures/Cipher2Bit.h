@@ -43,7 +43,7 @@ public:
   */
   CipherBit multiplyComposant();
   /*
-    Input : the Cipher2Bit to compare using the ">=" operation
+    Input : the Cipher2Bit to compare using the "<" operation
     Output : A Cipherbit containing an encrypted "1" if True or "0" if false
     a<b is computing using this boolean equation :
     (a1<b1)+(a1.XOR(b1).reverse()*(a0<b0))
@@ -63,6 +63,12 @@ public:
     Tha A part will override the Cipher2bit
   */
   Cipher2Bit multiply(Cipher2Bit b);
+  /*
+    Input : adding is the Cipherbit to add
+    this will be override by the result
+    Output: the carry of the addition
+  */
+  CipherBit incrementation(CipherBit adding);
   
 private:
   CipherBit bitZero; //A cipher2Bit is composed of two part which are two Cipherbit
