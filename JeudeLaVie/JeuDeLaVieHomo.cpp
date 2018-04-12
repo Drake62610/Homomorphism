@@ -14,20 +14,26 @@ void destroy(CipherBit** matrix,int largeur,int longueur){
 	}
 	delete(matrix);
 }
-Cipher3Bit compteurLivingCell(CipherBit **matrix,int largeur,int longueur,int posC,int posL,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
+Cipher3Bit compteurLivingCell(CipherBit** matrix,int largeur,int longueur,int posC,int posL,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
 	Plaintext myplain0("0");
 	Ciphertext myCipher0;
+	CipherBit tmp;
 	encryptor.encrypt(myplain0,myCipher0);
 	CipherBit compteurMSB(evaluator,encryptor,myCipher0);
 	Cipher2Bit compteur0(compteurMSB,compteurMSB);
 	Cipher3Bit compteur(compteur0,compteurMSB);
+	//cout<<"Init du compteurLivingCell"<<endl;
 	for (int i=-1;i<2;i++){
 		for(int j=-1;j<2;j++){
 			if (i==0 && j==0){
 				continue;
 			}
 			else {
-				compteur.incrementation(matrix[i][j]);
+				//cout<<"avant l'incrementation"<<endl;
+				tmp=matrix[(posC+i+largeur)%largeur][(posL+j+longueur)%longueur].copy();
+				//cout<<"tmp init"<<endl;
+				compteur.incrementation(tmp);
+				//cout<<"après l'incrementation"<<endl;
 			}
 		}
 	}
@@ -81,16 +87,20 @@ void copyMatrix(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longue
 	cout<<"Copy Done "<<endl;
 }
 void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
+	cout<<"On est dans le globale"<<endl;
 	Cipher3Bit compteur;
 	CipherBit** matrixNext;
 	matrixNext = (CipherBit**) malloc(largeur * sizeof(CipherBit*));
 	for(int i = 0; i < largeur; i++) {
 		matrixNext[i] = (CipherBit*) malloc(longueur * sizeof(CipherBit));
 	}
+	cout<<"on a malloc"<<endl;
 	for (int etape=0;etape<nbEtape;etape++){
 		for (int i=0;i<largeur;i++){
 			for (int j=0;j<longueur;j++){
+				//cout<<"on est dans les for"<<endl;
 				compteur=compteurLivingCell(matrix,largeur,longueur,i,j,encryptor,evaluator,decryptor);
+				//cout<<"On a le compteur"<<endl;
 				Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);	
 				CipherBit faux(evaluator,encryptor,myCipher0);
 				Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
@@ -102,6 +112,7 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 				CipherBit result=faux.copy();
 				CipherBit tmp=faux.copy();
 
+				//cout<<"Début des if"<<endl;
 				//egal à 2?
 				Cipher3Bit tmp3B=compteur.copy();
 				tmp3B.XOR(deux);
@@ -142,6 +153,7 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 					//result+=XOR(compteur,"2").inverse4Bits().4BitsTo1Bit()*(matrix[i][j]) + XOR(compteur,"3").inverse().4BitsTo1Bit()*("true");
 
 				*/
+				cout<<"première itération fini"<<endl;
 			}
 		}
 		copyMatrix(matrix,matrixNext,largeur,longueur);
@@ -173,6 +185,19 @@ int main(){
     Evaluator evaluator(context);
     Decryptor decryptor(context, secret_key);
 
+    cout<<"/Lancement de l'exemple de la Grenouille"<<endl;
+	int largeur=5,longueur=5;
+	CipherBit** matrix;
+
+	matrix = (CipherBit**) malloc(largeur * sizeof(CipherBit*));
+	for(int i = 0; i < largeur; i++) {
+		matrix[i] = (CipherBit*) malloc(longueur * sizeof(CipherBit));
+	}
+
+	largeur=longueur=initGrenouille(matrix,encryptor,evaluator,decryptor);
+	printMatrix(matrix,largeur,longueur,decryptor);
+	globale(matrix,largeur,longueur,1,encryptor,evaluator,decryptor);
+	destroy(matrix,largeur,longueur);
 
 
 
