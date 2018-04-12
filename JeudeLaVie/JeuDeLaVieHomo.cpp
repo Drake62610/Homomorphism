@@ -81,7 +81,7 @@ void copyMatrix(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longue
 	cout<<"Copy Done "<<endl;
 }
 void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
-	int compteur;
+	Cipher3Bit compteur;
 	CipherBit** matrixNext;
 	matrixNext = (CipherBit**) malloc(largeur * sizeof(CipherBit*));
 	for(int i = 0; i < largeur; i++) {
@@ -91,15 +91,43 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 		for (int i=0;i<largeur;i++){
 			for (int j=0;j<longueur;j++){
 				compteur=compteurLivingCell(matrix,largeur,longueur,i,j,encryptor,evaluator,decryptor);
-				if (compteur==2){
-					matrixNext[i][j]=matrix[i][j];
+				Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);	
+				CipherBit faux(evaluator,encryptor,myCipher0);
+				Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
+				CipherBit vrai(evaluator,encryptor,myCipher1);
+				Cipher2Bit deux2(faux,vrai);
+				Cipher2Bit trois2(vrai,vrai);
+				Cipher3Bit deux(deux2,faux);
+				Cipher3Bit trois(trois2,faux);
+				CipherBit result=faux.copy();
+				CipherBit tmp=faux.copy();
+
+				//egal à 2?
+				Cipher3Bit tmp3B=compteur.copy();
+				tmp3B.XOR(deux);
+				tmp3B.reverse();
+				tmp=tmp3B.multiplyComposant();
+				tmp.multiply(matrix[i][j]);
+				result.add(tmp);
+
+				//égal à 3?
+				tmp3B=compteur.copy();
+				tmp3B.XOR(trois);
+				tmp3B.reverse();
+				tmp=tmp3B.multiplyComposant();
+				tmp.multiply(matrix[i][j]);
+				result.add(tmp);
+				//result.add(XOR(compteur,"3").inverse().4BitsTo1Bit());
+				matrixNext[i][j]=result;
+				/*if (compteur==2){
+					matrixNext[i][j]=matrix[i][j].copy();
 				}
 				else if (compteur==3){
 					matrixNext[i][j]=true;
 				}
 				else {
 					matrixNext[i][j]=false;
-				}
+				}*/
 				/* Pour changer les conditions en une ligne:
 					compteur=Struct4Bits
 					"2" et "3"=Struct4Bits
@@ -114,7 +142,6 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 					//result+=XOR(compteur,"2").inverse4Bits().4BitsTo1Bit()*(matrix[i][j]) + XOR(compteur,"3").inverse().4BitsTo1Bit()*("true");
 
 				*/
-				/*
 			}
 		}
 		copyMatrix(matrix,matrixNext,largeur,longueur);
@@ -122,7 +149,7 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 		printMatrix(matrix,largeur,longueur,decryptor);
 	}
 	destroy(matrixNext,largeur,longueur);
-}*/
+}
 
 
 int main(){
