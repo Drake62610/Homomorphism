@@ -9,6 +9,7 @@
 class Cipher3Bit{
 public:
   //Constructor
+  Cipher3Bit();
   Cipher3Bit(Cipher2Bit a,CipherBit b);
   //Getter
   Cipher2Bit getPartie0();

@@ -3,6 +3,7 @@
 using namespace std;
 using namespace seal;
 //Constructor
+Cipher3Bit::Cipher3Bit(){}
 Cipher3Bit::Cipher3Bit(Cipher2Bit a,CipherBit b){
 	(this->partie0)=a.copy();
 	(this->msb)=b.copy();
