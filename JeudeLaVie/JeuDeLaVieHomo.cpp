@@ -8,7 +8,7 @@ using namespace seal;
 
 //Fonctions du jeu de la vie en homomorphique
 void destroy(CipherBit** matrix,int largeur,int longueur){
-	
+
 	for(int i = 0; i < largeur; i++) {
 		delete(matrix[i]);
 	}
@@ -16,6 +16,7 @@ void destroy(CipherBit** matrix,int largeur,int longueur){
 }
 Cipher3Bit compteurLivingCell(CipherBit** matrix,int largeur,int longueur,int posC,int posL,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
 	Plaintext myplain0("0");
+	Plaintext plainResult;
 	Ciphertext myCipher0;
 	CipherBit tmp;
 	encryptor.encrypt(myplain0,myCipher0);
@@ -25,24 +26,49 @@ Cipher3Bit compteurLivingCell(CipherBit** matrix,int largeur,int longueur,int po
 	//cout<<"Init du compteurLivingCell"<<endl;
 	for (int i=-1;i<2;i++){
 		for(int j=-1;j<2;j++){
+			cout<<"i= "<<i<<endl;
+			cout<<"j= "<<j<<endl;
 			if (i==0 && j==0){
 				continue;
 			}
 			else {
 				//cout<<"avant l'incrementation"<<endl;
 				tmp=matrix[(posC+i+largeur)%largeur][(posL+j+longueur)%longueur].copy();
-				//cout<<"tmp init"<<endl;
+				decryptor.decrypt(tmp.getcipherBit(),plainResult);
+			  cout << "tmp init = " << plainResult.to_string() << endl;
+				cout << "compteur" << endl;
+					Cipher2Bit test; test = compteur.getPartie0();
+					decryptor.decrypt(test.getCipherBit0().getcipherBit(),plainResult);
+					cout << "bit0= " << plainResult.to_string()<< endl;
+					decryptor.decrypt(test.getCipherBit1().getcipherBit(),plainResult);
+					cout << "bit1= " << plainResult.to_string() << endl;
+					decryptor.decrypt(compteur.getMSB().getcipherBit(),plainResult);
+				  cout << "bit2= " << plainResult.to_string()<<endl;
 				compteur.incrementation(tmp);
+				cout<<"kohalalala"<<endl;
 				decryptor.decrypt(compteur.getMSB().getcipherBit(),myplain0);
+				cout << "MSB " << myplain0.to_string() << endl;
+				cout << "  Noise budget in MSB: " << decryptor.invariant_noise_budget(compteur.getMSB().getcipherBit()) << " bits" << endl;
 				encryptor.encrypt(myplain0,myCipher0);
-				compteur.setMSB(myCipher0);
+				tmp.setcipherBit(myCipher0);
+				compteur.setMSB(tmp);
+				cout << "  Noise budget in NEW MSB: " << decryptor.invariant_noise_budget(compteur.getMSB().getcipherBit()) << " bits" << endl;
 				decryptor.decrypt(compteur.getPartie0().getCipherBit0().getcipherBit(),myplain0);
+				cout << "bit0 " << myplain0.to_string() << endl;
 				encryptor.encrypt(myplain0,myCipher0);
-				compteur.getPartie0().setCipherBit0(myCipher0);
+				//cout << "  Noise budget in myCipher0: " << decryptor.invariant_noise_budget(myCipher0) << " bits" << endl;
+				tmp.setcipherBit(myCipher0);
+				compteur0.setCipherBit0(tmp);
+				//compteur.getPartie0().setCipherBit0(tmp);
 				decryptor.decrypt(compteur.getPartie0().getCipherBit1().getcipherBit(),myplain0);
+				cout << "bit1 " << myplain0.to_string() << endl;
 				encryptor.encrypt(myplain0,myCipher0);
-				compteur.getPartie0().setCipherBit1(myCipher0);
-				//cout<<"après l'incrementation"<<endl;
+				tmp.setcipherBit(myCipher0);
+				compteur0.setCipherBit1(tmp);
+				compteur.setPartie0(compteur0);
+				//cout << "  Noise budget in myCipher0: " << decryptor.invariant_noise_budget(myCipher0) << " bits" << endl;
+				//compteur.getPartie0().setCipherBit1(tmp);
+				cout<<"après l'incrementation"<<endl;
 			}
 		}
 	}
@@ -50,16 +76,17 @@ Cipher3Bit compteurLivingCell(CipherBit** matrix,int largeur,int longueur,int po
 }
 
 void initToZero(CipherBit** matrix,int largeur,int longueur,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
+	Plaintext myplain0("0");	Ciphertext myCipher0;
 	for (int i=0;i<largeur;i++){
 		for (int j=0;j<longueur;j++){
-			Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);	CipherBit faux(evaluator,encryptor,myCipher0);
+			encryptor.encrypt(myplain0,myCipher0);	CipherBit faux(evaluator,encryptor,myCipher0);
 			matrix[i][j]=faux.copy();
 		}
 	}
 }
 
 int initGrenouille(CipherBit** matrix,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
-	initToZero(matrix,3,3,encryptor,evaluator,decryptor);
+	initToZero(matrix,5,5,encryptor,evaluator,decryptor);
 	Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
 	CipherBit vrai0(evaluator,encryptor,myCipher1);
 	CipherBit vrai1(evaluator,encryptor,myCipher1);
@@ -72,8 +99,8 @@ int initGrenouille(CipherBit** matrix,Encryptor encryptor,Evaluator evaluator, D
 	matrix[1][2]=vrai2.copy();
 	matrix[2][1]=vrai3.copy();
 	matrix[2][2]=vrai4.copy();
-	//matrix[1][3]=vrai5.copy();
-	return 3;
+	matrix[1][3]=vrai5.copy();
+	return 5;
 }
 
 void printMatrix(CipherBit** matrix,int largeur,int longueur,Decryptor decryptor){
@@ -111,10 +138,10 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 	for(int i = 0; i < largeur; i++) {
 		matrixNext[i] = (CipherBit*) malloc(longueur * sizeof(CipherBit));
 	}
-	Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
-	CipherBit vrai0(evaluator,encryptor,myCipher1);
+	//Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
+	//CipherBit vrai0(evaluator,encryptor,myCipher1);
 	cout<<"wesh"<<endl;
-	matrixNext[1][1]=vrai0.copy();
+	//matrixNext[1][1]=vrai0.copy();
 	//largeur=longueur=initGrenouille(matrixNext,encryptor,evaluator,decryptor);
 	cout<<"on a malloc"<<endl;
 	for (int etape=0;etape<nbEtape;etape++){
@@ -123,8 +150,9 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 				//cout<<"on est dans les for"<<endl;
 				cout<<"cellule n° "<<i+j<<endl;
 				compteur=compteurLivingCell(matrix,largeur,longueur,i,j,encryptor,evaluator,decryptor);
-				//cout<<"On a le compteur"<<endl;
-				Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);	
+				cout<<"On a le compteur"<<endl;
+
+				Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);
 				CipherBit faux(evaluator,encryptor,myCipher0);
 				Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
 				CipherBit vrai(evaluator,encryptor,myCipher1);
@@ -135,13 +163,18 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 				CipherBit result=faux.copy();
 				CipherBit tmp=faux.copy();
 
-				//cout<<"Début des if"<<endl;
+				cout<<"Début des if"<<endl;
 				//egal à 2?
 				Cipher3Bit tmp3B=compteur.copy();
+				cout<<"1"<<endl;
 				tmp3B.XOR(deux);
+				cout<<"2"<<endl;
 				tmp3B.reverse();
+				cout<<"3"<<endl;
 				tmp=tmp3B.multiplyComposant();
+				cout<<"4"<<endl;
 				tmp.multiply(matrix[i][j]);
+				cout<<"5"<<endl;
 				result.add(tmp);
 
 				//égal à 3?
@@ -172,7 +205,7 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 					result="false";
 					result.add(XOR(compteur,"2").inverse4Bits().4BitsTo1Bit().multiply(matrix[i][j]));
 					result.add(XOR(compteur,"3").inverse().4BitsTo1Bit());
-					
+
 					//result+=XOR(compteur,"2").inverse4Bits().4BitsTo1Bit()*(matrix[i][j]) + XOR(compteur,"3").inverse().4BitsTo1Bit()*("true");
 
 				*/
@@ -191,8 +224,8 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 int main(){
   //Configuration des paramètres homomorphiques
     EncryptionParameters parms;
-    parms.set_poly_modulus("1x^8192 + 1");
-    parms.set_coeff_modulus(coeff_modulus_128(8192));
+    parms.set_poly_modulus("1x^16384 + 1");
+    parms.set_coeff_modulus(coeff_modulus_128(16384));
     parms.set_plain_modulus(1<<2);
   //Validation des paramètres et création du contexte
     SEALContext context(parms);
@@ -210,7 +243,7 @@ int main(){
     Decryptor decryptor(context, secret_key);
 
     cout<<"/Lancement de l'exemple de la Grenouille"<<endl;
-	int largeur=3,longueur=3;
+	int largeur=5,longueur=5;
 	CipherBit** matrix;
 
 	matrix = (CipherBit**) malloc(largeur * sizeof(CipherBit*));

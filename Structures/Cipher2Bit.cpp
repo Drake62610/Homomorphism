@@ -78,7 +78,9 @@ Cipher2Bit Cipher2Bit::multiply(Cipher2Bit b){
 	return carry2;
 }
 CipherBit Cipher2Bit::incrementation(CipherBit adding){
+	std::cout << "test" << '\n';
 	CipherBit carry=this->bitZero.add(adding);
-	carry=this->bitUn.add(adding);
+	std::cout << "test2" << '\n';
+	carry=this->bitUn.add(carry);
 	return carry;
 }
