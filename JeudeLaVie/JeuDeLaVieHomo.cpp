@@ -33,6 +33,15 @@ Cipher3Bit compteurLivingCell(CipherBit** matrix,int largeur,int longueur,int po
 				tmp=matrix[(posC+i+largeur)%largeur][(posL+j+longueur)%longueur].copy();
 				//cout<<"tmp init"<<endl;
 				compteur.incrementation(tmp);
+				decryptor.decrypt(compteur.getMSB().getcipherBit(),myplain0);
+				encryptor.encrypt(myplain0,myCipher0);
+				compteur.setMSB(myCipher0);
+				decryptor.decrypt(compteur.getPartie0().getCipherBit0().getcipherBit(),myplain0);
+				encryptor.encrypt(myplain0,myCipher0);
+				compteur.getPartie0().setCipherBit0(myCipher0);
+				decryptor.decrypt(compteur.getPartie0().getCipherBit1().getcipherBit(),myplain0);
+				encryptor.encrypt(myplain0,myCipher0);
+				compteur.getPartie0().setCipherBit1(myCipher0);
 				//cout<<"après l'incrementation"<<endl;
 			}
 		}
@@ -50,7 +59,7 @@ void initToZero(CipherBit** matrix,int largeur,int longueur,Encryptor encryptor,
 }
 
 int initGrenouille(CipherBit** matrix,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
-	initToZero(matrix,5,5,encryptor,evaluator,decryptor);
+	initToZero(matrix,3,3,encryptor,evaluator,decryptor);
 	Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
 	CipherBit vrai0(evaluator,encryptor,myCipher1);
 	CipherBit vrai1(evaluator,encryptor,myCipher1);
@@ -63,8 +72,8 @@ int initGrenouille(CipherBit** matrix,Encryptor encryptor,Evaluator evaluator, D
 	matrix[1][2]=vrai2.copy();
 	matrix[2][1]=vrai3.copy();
 	matrix[2][2]=vrai4.copy();
-	matrix[1][3]=vrai5.copy();
-	return 5;
+	//matrix[1][3]=vrai5.copy();
+	return 3;
 }
 
 void printMatrix(CipherBit** matrix,int largeur,int longueur,Decryptor decryptor){
@@ -79,8 +88,16 @@ void printMatrix(CipherBit** matrix,int largeur,int longueur,Decryptor decryptor
 }
 
 void copyMatrix(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longueur){
+	CipherBit test;
+	CipherBit tmp;
 	for (int i=0;i<largeur;i++){
 		for (int j=0;j<longueur;j++){
+			cout<<"eke"<<endl;
+			test=matrix[i][j].copy();
+			cout<<"test init"<<endl;
+			tmp=matrixNext[i][j].copy();
+			cout<<"tmp init"<<endl;
+
 			matrix[i][j]=matrixNext[i][j].copy();
 		}
 	}
@@ -94,11 +111,17 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 	for(int i = 0; i < largeur; i++) {
 		matrixNext[i] = (CipherBit*) malloc(longueur * sizeof(CipherBit));
 	}
+	Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
+	CipherBit vrai0(evaluator,encryptor,myCipher1);
+	cout<<"wesh"<<endl;
+	matrixNext[1][1]=vrai0.copy();
+	//largeur=longueur=initGrenouille(matrixNext,encryptor,evaluator,decryptor);
 	cout<<"on a malloc"<<endl;
 	for (int etape=0;etape<nbEtape;etape++){
 		for (int i=0;i<largeur;i++){
 			for (int j=0;j<longueur;j++){
 				//cout<<"on est dans les for"<<endl;
+				cout<<"cellule n° "<<i+j<<endl;
 				compteur=compteurLivingCell(matrix,largeur,longueur,i,j,encryptor,evaluator,decryptor);
 				//cout<<"On a le compteur"<<endl;
 				Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);	
@@ -138,7 +161,7 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 				}
 				else {
 					matrixNext[i][j]=false;
-				}*/
+				}
 				/* Pour changer les conditions en une ligne:
 					compteur=Struct4Bits
 					"2" et "3"=Struct4Bits
@@ -156,6 +179,7 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 				cout<<"première itération fini"<<endl;
 			}
 		}
+		cout<<"WHAT"<<endl;
 		copyMatrix(matrix,matrixNext,largeur,longueur);
 		cout<<"Après l'étape "<<etape<<endl;
 		printMatrix(matrix,largeur,longueur,decryptor);
@@ -186,7 +210,7 @@ int main(){
     Decryptor decryptor(context, secret_key);
 
     cout<<"/Lancement de l'exemple de la Grenouille"<<endl;
-	int largeur=5,longueur=5;
+	int largeur=3,longueur=3;
 	CipherBit** matrix;
 
 	matrix = (CipherBit**) malloc(largeur * sizeof(CipherBit*));
