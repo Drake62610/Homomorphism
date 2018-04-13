@@ -8,7 +8,7 @@ using namespace seal;
 
 //Fonctions du jeu de la vie en homomorphique
 void destroy(CipherBit** matrix,int largeur,int longueur){
-	
+
 	for(int i = 0; i < largeur; i++) {
 		delete(matrix[i]);
 	}
@@ -25,6 +25,7 @@ Cipher3Bit compteurLivingCell(CipherBit** matrix,int largeur,int longueur,int po
 	//cout<<"Init du compteurLivingCell"<<endl;
 	for (int i=-1;i<2;i++){
 		for(int j=-1;j<2;j++){
+			cout<<"DJYOLOSWAG"<<endl;
 			if (i==0 && j==0){
 				continue;
 			}
@@ -50,7 +51,7 @@ void initToZero(CipherBit** matrix,int largeur,int longueur,Encryptor encryptor,
 }
 
 int initGrenouille(CipherBit** matrix,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
-	initToZero(matrix,5,5,encryptor,evaluator,decryptor);
+	initToZero(matrix,4,4,encryptor,evaluator,decryptor);
 	Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
 	CipherBit vrai0(evaluator,encryptor,myCipher1);
 	CipherBit vrai1(evaluator,encryptor,myCipher1);
@@ -64,7 +65,7 @@ int initGrenouille(CipherBit** matrix,Encryptor encryptor,Evaluator evaluator, D
 	matrix[2][1]=vrai3.copy();
 	matrix[2][2]=vrai4.copy();
 	matrix[1][3]=vrai5.copy();
-	return 5;
+	return 4;
 }
 
 void printMatrix(CipherBit** matrix,int largeur,int longueur,Decryptor decryptor){
@@ -98,10 +99,11 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 	for (int etape=0;etape<nbEtape;etape++){
 		for (int i=0;i<largeur;i++){
 			for (int j=0;j<longueur;j++){
+				cout<<"DJYOLOSWAG2010"<<endl;
 				//cout<<"on est dans les for"<<endl;
 				compteur=compteurLivingCell(matrix,largeur,longueur,i,j,encryptor,evaluator,decryptor);
 				//cout<<"On a le compteur"<<endl;
-				Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);	
+				Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);
 				CipherBit faux(evaluator,encryptor,myCipher0);
 				Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
 				CipherBit vrai(evaluator,encryptor,myCipher1);
@@ -111,6 +113,7 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 				Cipher3Bit trois(trois2,faux);
 				CipherBit result=faux.copy();
 				CipherBit tmp=faux.copy();
+				cout<<"DJYOLOSWAG2011"<<endl;
 
 				//cout<<"Début des if"<<endl;
 				//egal à 2?
@@ -120,7 +123,7 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 				tmp=tmp3B.multiplyComposant();
 				tmp.multiply(matrix[i][j]);
 				result.add(tmp);
-
+				cout<<"DJYOLOSWAG2012"<<endl;
 				//égal à 3?
 				tmp3B=compteur.copy();
 				tmp3B.XOR(trois);
@@ -129,6 +132,7 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 				tmp.multiply(matrix[i][j]);
 				result.add(tmp);
 				//result.add(XOR(compteur,"3").inverse().4BitsTo1Bit());
+				cout<<"DJYOLOSWAG2013"<<endl;
 				matrixNext[i][j]=result;
 				/*if (compteur==2){
 					matrixNext[i][j]=matrix[i][j].copy();
@@ -149,7 +153,7 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 					result="false";
 					result.add(XOR(compteur,"2").inverse4Bits().4BitsTo1Bit().multiply(matrix[i][j]));
 					result.add(XOR(compteur,"3").inverse().4BitsTo1Bit());
-					
+
 					//result+=XOR(compteur,"2").inverse4Bits().4BitsTo1Bit()*(matrix[i][j]) + XOR(compteur,"3").inverse().4BitsTo1Bit()*("true");
 
 				*/
@@ -186,7 +190,7 @@ int main(){
     Decryptor decryptor(context, secret_key);
 
     cout<<"/Lancement de l'exemple de la Grenouille"<<endl;
-	int largeur=5,longueur=5;
+	int largeur=4,longueur=4;
 	CipherBit** matrix;
 
 	matrix = (CipherBit**) malloc(largeur * sizeof(CipherBit*));

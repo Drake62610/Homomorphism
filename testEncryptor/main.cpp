@@ -10,7 +10,7 @@ void print2Bit(Decryptor decryptor,Cipher2Bit c2B){
   decryptor.decrypt(c2B.getCipherBit0().getcipherBit(),plainResult);
   cout << "bit0= " << plainResult.to_string();
   decryptor.decrypt(c2B.getCipherBit1().getcipherBit(),plainResult);
-  cout << " bit1= " << plainResult.to_string() << endl;
+  cout << "bit1= " << plainResult.to_string() << endl;
 }
 
 int main(){
