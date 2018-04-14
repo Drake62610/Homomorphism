@@ -14,16 +14,8 @@ void destroy(CipherBit** matrix,int largeur,int longueur){
 	}
 	delete(matrix);
 }
-Cipher3Bit compteurLivingCell(CipherBit** matrix,int largeur,int longueur,int posC,int posL,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
-	Plaintext myplain0("0");
-	Plaintext plainResult;
-	Ciphertext myCipher0;
-	CipherBit tmp;
-	encryptor.encrypt(myplain0,myCipher0);
-	CipherBit compteurMSB(evaluator,encryptor,myCipher0);
-	Cipher2Bit compteur0(compteurMSB,compteurMSB);
-	Cipher3Bit compteur(compteur0,compteurMSB);
-	//cout<<"Init du compteurLivingCell"<<endl;
+Cipher3Bit compteurLivingCell(CipherBit** matrix,int largeur,int longueur,int posC,int posL,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor, Cipher3Bit compteur){
+	CipherBit tmp; Plaintext print;
 	for (int i=-1;i<2;i++){
 		for(int j=-1;j<2;j++){
 			cout<<"i= "<<i<<endl;
@@ -34,44 +26,15 @@ Cipher3Bit compteurLivingCell(CipherBit** matrix,int largeur,int longueur,int po
 			else {
 				//cout<<"avant l'incrementation"<<endl;
 				tmp=matrix[(posC+i+largeur)%largeur][(posL+j+longueur)%longueur].copy();
-				decryptor.decrypt(tmp.getcipherBit(),plainResult);
-			  cout << "tmp init = " << plainResult.to_string() << endl;
-				cout << "compteur" << endl;
-					Cipher2Bit test; test = compteur.getPartie0();
-					decryptor.decrypt(test.getCipherBit0().getcipherBit(),plainResult);
-					cout << "bit0= " << plainResult.to_string()<< endl;
-					decryptor.decrypt(test.getCipherBit1().getcipherBit(),plainResult);
-					cout << "bit1= " << plainResult.to_string() << endl;
-					decryptor.decrypt(compteur.getMSB().getcipherBit(),plainResult);
-				  cout << "bit2= " << plainResult.to_string()<<endl;
-				compteur.incrementation(tmp);
-				cout<<"kohalalala"<<endl;
-				decryptor.decrypt(compteur.getMSB().getcipherBit(),myplain0);
-				cout << "MSB " << myplain0.to_string() << endl;
-				cout << "  Noise budget in MSB: " << decryptor.invariant_noise_budget(compteur.getMSB().getcipherBit()) << " bits" << endl;
-				encryptor.encrypt(myplain0,myCipher0);
-				tmp.setcipherBit(myCipher0);
-				compteur.setMSB(tmp);
-				cout << "  Noise budget in NEW MSB: " << decryptor.invariant_noise_budget(compteur.getMSB().getcipherBit()) << " bits" << endl;
-				decryptor.decrypt(compteur.getPartie0().getCipherBit0().getcipherBit(),myplain0);
-				cout << "bit0 " << myplain0.to_string() << endl;
-				encryptor.encrypt(myplain0,myCipher0);
-				//cout << "  Noise budget in myCipher0: " << decryptor.invariant_noise_budget(myCipher0) << " bits" << endl;
-				tmp.setcipherBit(myCipher0);
-				compteur0.setCipherBit0(tmp);
-				//compteur.getPartie0().setCipherBit0(tmp);
-				decryptor.decrypt(compteur.getPartie0().getCipherBit1().getcipherBit(),myplain0);
-				cout << "bit1 " << myplain0.to_string() << endl;
-				encryptor.encrypt(myplain0,myCipher0);
-				tmp.setcipherBit(myCipher0);
-				compteur0.setCipherBit1(tmp);
-				compteur.setPartie0(compteur0);
-				//cout << "  Noise budget in myCipher0: " << decryptor.invariant_noise_budget(myCipher0) << " bits" << endl;
-				//compteur.getPartie0().setCipherBit1(tmp);
-				cout<<"après l'incrementation"<<endl;
+			  decryptor.decrypt(tmp.getcipherBit(),print);
+				cout << "etat = " << print.to_string() << endl;
+				compteur.incrementation(tmp); // On ajoute l'etat de la case au compteur pour compter les cellules vivantes
+				compteur.reduceNoise(); //Triche simulation du futur
 			}
 		}
 	}
+	std::cout << "fini" << '\n';
+	compteur.reduceNoise(); //Triche simulation du futur
 	return compteur;
 }
 
@@ -88,18 +51,13 @@ void initToZero(CipherBit** matrix,int largeur,int longueur,Encryptor encryptor,
 int initGrenouille(CipherBit** matrix,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
 	initToZero(matrix,5,5,encryptor,evaluator,decryptor);
 	Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
-	CipherBit vrai0(evaluator,encryptor,myCipher1);
-	CipherBit vrai1(evaluator,encryptor,myCipher1);
-	CipherBit vrai2(evaluator,encryptor,myCipher1);
-	CipherBit vrai3(evaluator,encryptor,myCipher1);
-	CipherBit vrai4(evaluator,encryptor,myCipher1);
-	CipherBit vrai5(evaluator,encryptor,myCipher1);
-	matrix[2][0]=vrai0.copy();
-	matrix[1][1]=vrai1.copy();
-	matrix[1][2]=vrai2.copy();
-	matrix[2][1]=vrai3.copy();
-	matrix[2][2]=vrai4.copy();
-	matrix[1][3]=vrai5.copy();
+	CipherBit vrai(evaluator,encryptor,myCipher1);
+	matrix[2][0]=vrai.copy();
+	matrix[1][1]=vrai.copy();
+	matrix[1][2]=vrai.copy();
+	matrix[2][1]=vrai.copy();
+	matrix[2][2]=vrai.copy();
+	matrix[1][3]=vrai.copy();
 	return 5;
 }
 
@@ -131,31 +89,50 @@ void copyMatrix(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longue
 	cout<<"Copy Done "<<endl;
 }
 void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor){
-	cout<<"On est dans le globale"<<endl;
-	Cipher3Bit compteur;
+	//Init compteur
+	Plaintext myplain0("0");	Plaintext plainResult;	Ciphertext myCipher0; CipherBit tmp;
+	encryptor.encrypt(myplain0,myCipher0); cout << "creation compteur" <<endl;
+	CipherBit compteurMSB(evaluator,encryptor, decryptor,myCipher0); // MSB = 0
+	Cipher2Bit compteur0(compteurMSB.copy(),compteurMSB.copy()); // 0 0
+	Cipher3Bit compteur(compteur0,compteurMSB); //Compteur = 0 0 0
+	Cipher3Bit _cmptr;
+	//????
 	CipherBit** matrixNext;
 	matrixNext = (CipherBit**) malloc(largeur * sizeof(CipherBit*));
 	for(int i = 0; i < largeur; i++) {
 		matrixNext[i] = (CipherBit*) malloc(longueur * sizeof(CipherBit));
 	}
-	//Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
-	//CipherBit vrai0(evaluator,encryptor,myCipher1);
-	cout<<"wesh"<<endl;
-	//matrixNext[1][1]=vrai0.copy();
-	//largeur=longueur=initGrenouille(matrixNext,encryptor,evaluator,decryptor);
-	cout<<"on a malloc"<<endl;
+
 	for (int etape=0;etape<nbEtape;etape++){
 		for (int i=0;i<largeur;i++){
 			for (int j=0;j<longueur;j++){
 				//cout<<"on est dans les for"<<endl;
 				cout<<"cellule n° "<<i+j<<endl;
-				compteur=compteurLivingCell(matrix,largeur,longueur,i,j,encryptor,evaluator,decryptor);
+				std::cout << "creation du tampon" << '\n';
+				_cmptr = compteur.copy();
+					cout << "Affichage du tampon avant comptage" << endl;
+					Cipher2Bit test; test = _cmptr.getPartie0();
+					decryptor.decrypt(test.getCipherBit0().getcipherBit(),plainResult);
+					cout << "bit0= " << plainResult.to_string()<< endl;
+					decryptor.decrypt(test.getCipherBit1().getcipherBit(),plainResult);
+					cout << "bit1= " << plainResult.to_string() << endl;
+					decryptor.decrypt(_cmptr.getMSB().getcipherBit(),plainResult);
+					cout << "bit2= " << plainResult.to_string()<<endl;
+				_cmptr = compteurLivingCell(matrix,largeur,longueur,i,j,encryptor,evaluator,decryptor,_cmptr);
 				cout<<"On a le compteur"<<endl;
-
+				_cmptr.reduceNoise();
+					cout << "Affichage du tampon après comptage" << endl;
+					test = _cmptr.getPartie0();
+					decryptor.decrypt(test.getCipherBit0().getcipherBit(),plainResult);
+					cout << "bit0= " << plainResult.to_string()<< endl;
+					decryptor.decrypt(test.getCipherBit1().getcipherBit(),plainResult);
+					cout << "bit1= " << plainResult.to_string() << endl;
+					decryptor.decrypt(_cmptr.getMSB().getcipherBit(),plainResult);
+					cout << "bit2= " << plainResult.to_string()<<endl;
 				Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);
-				CipherBit faux(evaluator,encryptor,myCipher0);
+				CipherBit faux(evaluator,encryptor,decryptor,myCipher0);
 				Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
-				CipherBit vrai(evaluator,encryptor,myCipher1);
+				CipherBit vrai(evaluator,encryptor,decryptor,myCipher1);
 				Cipher2Bit deux2(faux,vrai);
 				Cipher2Bit trois2(vrai,vrai);
 				Cipher3Bit deux(deux2,faux);
@@ -165,9 +142,9 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 
 				cout<<"Début des if"<<endl;
 				//egal à 2?
-				Cipher3Bit tmp3B=compteur.copy();
-				cout<<"1"<<endl;
-				tmp3B.XOR(deux);
+				Cipher3Bit tmp3B=_cmptr.copy();
+				cout<<"Xor tmp3B & deux"<<endl;
+				compteur.XOR(deux);
 				cout<<"2"<<endl;
 				tmp3B.reverse();
 				cout<<"3"<<endl;
@@ -178,14 +155,21 @@ void globale(CipherBit** matrix,int largeur,int longueur,int nbEtape,Encryptor e
 				result.add(tmp);
 
 				//égal à 3?
-				tmp3B=compteur.copy();
+				cout<<"Xor tmp3B & trois"<<endl;
+				tmp3B=_cmptr.copy();
 				tmp3B.XOR(trois);
+				cout<<"2"<<endl;
 				tmp3B.reverse();
+				cout<<"3"<<endl;
 				tmp=tmp3B.multiplyComposant();
+				cout<<"4"<<endl;
 				tmp.multiply(matrix[i][j]);
+				cout<<"5"<<endl;
 				result.add(tmp);
 				//result.add(XOR(compteur,"3").inverse().4BitsTo1Bit());
-				matrixNext[i][j]=result;
+				std::cout << "ecrasement" << '\n';
+				//matrixNext[i][j]=result;
+
 				/*if (compteur==2){
 					matrixNext[i][j]=matrix[i][j].copy();
 				}
@@ -253,10 +237,39 @@ int main(){
 
 	largeur=longueur=initGrenouille(matrix,encryptor,evaluator,decryptor);
 	printMatrix(matrix,largeur,longueur,decryptor);
-	globale(matrix,largeur,longueur,1,encryptor,evaluator,decryptor);
-	destroy(matrix,largeur,longueur);
 
+	// //Creation de compteur
+	// Plaintext myplain0("0");
+	// Plaintext plainResult;
+	// Ciphertext myCipher0;
+	// CipherBit tmp;
+	// encryptor.encrypt(myplain0,myCipher0);
+	// CipherBit compteurMSB(evaluator,encryptor,decryptor,myCipher0); // MSB = 0
+	// Cipher2Bit compteur0(compteurMSB.copy(),compteurMSB.copy()); // 0 0
+	// Cipher3Bit compteur(compteur0,compteurMSB); //Compteur = 0 0 0
+	//
+	// tmp=matrix[4][4].copy();
+	// compteur.incrementation(tmp);
+	// compteur.reduceNoise();
+	// tmp=matrix[4][0].copy();
+	// compteur.incrementation(tmp); // On ajoute l'etat de la case au compteur pour compter les cellules vivantes
+	//
+	// CipherBit faux(evaluator,encryptor,decryptor,myCipher0);
+	// Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
+	// CipherBit vrai(evaluator,encryptor,decryptor,myCipher1);
+	// Cipher2Bit deux2(faux,vrai);
+	// Cipher2Bit trois2(vrai,vrai);
+	// Cipher3Bit deux(deux2,faux);
+	// Cipher3Bit trois(trois2,faux);
+	// CipherBit result=faux.copy();
+	// tmp=faux.copy();
+	// cout<<"Début des if"<<endl;
+	// //egal à 2?
+	// Cipher3Bit tmp3B=compteur.copy();
+	// cout<<"Xor tmp3B & deux"<<endl;
+	// tmp3B.XOR(deux);
 
-
-    return 0;
+  globale(matrix,largeur,longueur,1,encryptor,evaluator,decryptor);
+	//destroy(matrix,largeur,longueur);
+	return 0;
 }

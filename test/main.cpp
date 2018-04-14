@@ -202,8 +202,8 @@ int main(){
     cout << "Noise budget in cipherOne: " << decryptor.invariant_noise_budget(cipherOne) << " bits" << endl;
     cout << "Noise budget in cipherZero: " << decryptor.invariant_noise_budget(cipherZero) << " bits" << endl <<endl;
 
-    CipherBit cipherBitOne(evaluator,encryptor,cipherOne);
-    CipherBit cipherBitZero(evaluator,encryptor,cipherZero);
+    CipherBit cipherBitOne(evaluator,encryptor,decryptor,cipherOne);
+    CipherBit cipherBitZero(evaluator,encryptor,decryptor,cipherZero);
     cout << "CipherBit created" <<endl;
     cout << "Noise budget in cipherBitOne: " << decryptor.invariant_noise_budget(cipherBitOne.getcipherBit()) << " bits" << endl;
     cout << "Noise budget in cipherBitZero: " << decryptor.invariant_noise_budget(cipherBitZero.getcipherBit()) << " bits" << endl <<endl;
@@ -228,8 +228,11 @@ int main(){
     //cout << "Noise budget in cipherBitOne after XOR: " << decryptor.invariant_noise_budget(cipherBitOne.getcipherBit()) << " bits" << endl;
     //cout << "Noise budget in cipherBitZero after XOR: " << decryptor.invariant_noise_budget(cipherBitZero.getcipherBit()) << " bits" << endl;
 
-    decryptor.decrypt(cipherBitZero.getcipherBit(),plainResult);
-    cout << "Print result : " << plainResult.to_string() << endl;
+    cipherBitZero.reduceNoise();
+    cout << "Noise budget in cipherBitZero after reducing: " << decryptor.invariant_noise_budget(cipherBitZero.getcipherBit()) << " bits" << endl <<endl;
+
+    //decryptor.decrypt(cipherBitZero.getcipherBit(),plainResult);
+    //cout << "Print result : " << plainResult.to_string() << endl;
 
   return 0;
 }

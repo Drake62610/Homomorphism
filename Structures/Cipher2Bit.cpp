@@ -77,10 +77,14 @@ Cipher2Bit Cipher2Bit::multiply(Cipher2Bit b){
 	Cipher2Bit carry2(tmp1,carry);
 	return carry2;
 }
+
 CipherBit Cipher2Bit::incrementation(CipherBit adding){
-	std::cout << "test" << '\n';
 	CipherBit carry=this->bitZero.add(adding);
-	std::cout << "test2" << '\n';
 	carry=this->bitUn.add(carry);
 	return carry;
+}
+
+void Cipher2Bit::reduceNoise(){
+	(this->bitZero).reduceNoise();
+	(this->bitUn).reduceNoise();
 }

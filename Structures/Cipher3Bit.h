@@ -43,7 +43,10 @@ public:
     Output: the carry of the addition
   */
   CipherBit incrementation(CipherBit adding);
-
+  /*
+    Will reset the noise budget, should be replaced by batching
+  */
+  void reduceNoise();
 private:
   Cipher2Bit partie0;
   CipherBit msb;

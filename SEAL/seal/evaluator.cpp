@@ -237,6 +237,8 @@ namespace seal
         int coeff_mod_count = coeff_modulus_.size();
         int encrypted_size = encrypted.size();
 
+        // cout << coeff_count << endl;
+        // cout << coeff_mod_count << endl;
         // Verify parameters.
         if (encrypted.hash_block_ != parms_.hash_block())
         {

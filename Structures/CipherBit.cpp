@@ -10,6 +10,12 @@ CipherBit::CipherBit(seal::Evaluator &eva,seal::Encryptor &enc, seal::Ciphertext
   encryptor = &enc;
   cipherBit = a;
 }
+CipherBit::CipherBit(Evaluator & eva, Encryptor &enc, Decryptor &dec, Ciphertext a){
+  evaluator = &eva;
+  encryptor = &enc;
+  decryptor = &dec;
+  cipherBit = a;
+}
 
 //Getter
 Ciphertext CipherBit::getcipherBit(){
@@ -56,7 +62,7 @@ CipherBit CipherBit::add(CipherBit b){
   Ciphertext copy = this -> cipherBit;
   this -> XOR(b);
   (this -> evaluator) -> multiply(copy,adding);
-  CipherBit result(*evaluator,*encryptor,(Ciphertext)copy);
+  CipherBit result(*evaluator,*encryptor,*decryptor,(Ciphertext)copy);
   return result;
 }
 
@@ -69,7 +75,7 @@ void CipherBit::reverse(){
 }
 
 CipherBit CipherBit::copy(){
-  return CipherBit(*evaluator,*encryptor,(Ciphertext)cipherBit);
+  return CipherBit(*evaluator,*encryptor,*decryptor,(Ciphertext)cipherBit);
 }
 
 CipherBit CipherBit::isLesser(CipherBit b){
@@ -89,4 +95,12 @@ void CipherBit::multiply(CipherBit b){
   Ciphertext mult = b.getcipherBit();
   Ciphertext copy = this -> cipherBit;
   (this -> evaluator) -> multiply(this -> cipherBit,mult);
+}
+
+void CipherBit::reduceNoise(){
+  Plaintext tmp; Ciphertext tmp2;
+  this -> decryptor -> decrypt (this -> cipherBit,tmp);
+  cout << "bit = " << tmp.to_string() << endl;
+  this -> encryptor -> encrypt(tmp,tmp2);
+  this -> cipherBit = tmp2;
 }

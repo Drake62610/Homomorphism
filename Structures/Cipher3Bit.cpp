@@ -11,10 +11,10 @@ Cipher3Bit::Cipher3Bit(Cipher2Bit a,CipherBit b){
 
 //Getter
 Cipher2Bit Cipher3Bit::getPartie0(){
-	return (this->partie0);
+	return (this->partie0).copy();
 }
 CipherBit Cipher3Bit::getMSB(){
-	return (this->msb);
+	return (this->msb).copy();
 }
 
 //Setter
@@ -45,4 +45,8 @@ CipherBit Cipher3Bit::incrementation(CipherBit adding){
 	CipherBit carry=this->partie0.incrementation(adding);
 	carry=this->msb.add(carry);
 	return carry;
+}
+void Cipher3Bit::reduceNoise(){
+	(this->partie0).reduceNoise();
+	(this->msb).reduceNoise();
 }

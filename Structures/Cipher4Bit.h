@@ -53,7 +53,10 @@ public:
     "1" if True or "0" if false
   */
   CipherBit isGreaterOrEqual(Cipher4Bit b);
-
+  /*
+    Will reset the noise budget, should be replaced by batching
+  */
+  void reduceNoise();
 private:
   Cipher2Bit partieZero;
   Cipher2Bit partieUne;

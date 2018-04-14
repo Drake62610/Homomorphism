@@ -18,6 +18,7 @@ public:
     Noise : no noise are consumed in this constructor
   */
   CipherBit(seal::Evaluator &evaluator,seal::Encryptor &encryptor, seal::Ciphertext);
+  CipherBit(seal::Evaluator & eva, seal::Encryptor &enc, seal::Decryptor &dec, seal::Ciphertext a);
   //Getter
   seal::Ciphertext getcipherBit();
   seal::Evaluator* getEvaluator();
@@ -67,11 +68,16 @@ public:
     this->cipherBit will be override by the result
   */
   void multiply(CipherBit b);
+  /*
+    Will reset the noise budget, should be replaced by batching
+  */
+  void reduceNoise();
 
 
 private:
   seal::Ciphertext cipherBit; //A cipherbit is composed by one Ciphertext wich will either be the polynomial "0" or "1"
   seal::Evaluator* evaluator; //Use an adress to avoid calling a constructor (witch won't exist)
   seal::Encryptor* encryptor; //Same here
+  seal::Decryptor* decryptor;
 };
 #endif

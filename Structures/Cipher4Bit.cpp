@@ -67,6 +67,10 @@ CipherBit Cipher4Bit::isGreaterOrEqual(Cipher4Bit b){
 	result.reverse();
 	return result;
 }
+void Cipher4Bit::reduceNoise(){
+	(this->partieZero).reduceNoise();
+	(this->partieUne).reduceNoise();
+}
 /*Cipher4Bit Cipher4Bit::multiply(Cipher4Bit b){
 	Cipher2Bit tmp0=this->partieZero.copy();
 	Cipher2Bit tmp1=this->partieUne.copy();

@@ -69,7 +69,11 @@ public:
     Output: the carry of the addition
   */
   CipherBit incrementation(CipherBit adding);
-  
+  /*
+    Will reset the noise budget, should be replaced by batching
+  */
+  void reduceNoise();
+
 private:
   CipherBit bitZero; //A cipher2Bit is composed of two part which are two Cipherbit
   CipherBit bitUn;

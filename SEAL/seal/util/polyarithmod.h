@@ -96,7 +96,7 @@ namespace seal
                 add_uint_uint_mod(operand1, operand2, coeff_modulus, coeff_uint64_count, result);
                 operand1 += coeff_uint64_count;
                 operand2 += coeff_uint64_count;
-                cout << operand1 << "+" << operand2 << endl;
+                //cout << operand1 << "+" << operand2 << endl;
                 result += coeff_uint64_count;
             }
         }

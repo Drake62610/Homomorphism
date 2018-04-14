@@ -32,7 +32,7 @@ namespace seal
         {
             throw invalid_argument("pool is uninitialized");
         }
-        
+
         int coeff_count = parms_.poly_modulus().coeff_count();
         int poly_coeff_uint64_count = parms_.poly_modulus().coeff_uint64_count();
         int coeff_mod_count = base_converter_.coeff_base_mod_count();
@@ -63,7 +63,7 @@ namespace seal
         secret_key_ = allocate_poly(coeff_count, coeff_mod_count, pool_);
         set_poly_poly(secret_key.data().pointer(), coeff_count, coeff_mod_count, secret_key_.get());
 
-        // Set the secret_key_array to have size 1 (first power of secret) 
+        // Set the secret_key_array to have size 1 (first power of secret)
         secret_key_array_ = allocate_poly(coeff_count, coeff_mod_count, pool_);
         set_poly_poly(secret_key_.get(), coeff_count, coeff_mod_count, secret_key_array_.get());
         secret_key_array_size_ = 1;
@@ -79,7 +79,7 @@ namespace seal
 
     Decryptor::Decryptor(const Decryptor &copy) :
         pool_(copy.pool_), parms_(copy.parms_), qualifiers_(copy.qualifiers_),
-        base_converter_(copy.base_converter_), 
+        base_converter_(copy.base_converter_),
         small_ntt_tables_(copy.small_ntt_tables_),
         secret_key_array_size_(copy.secret_key_array_size_)
     {
@@ -156,14 +156,14 @@ namespace seal
 
             for (int j = 0; j < encrypted_size - 1; j++)
             {
-                // Perform the dyadic product. 
+                // Perform the dyadic product.
                 set_uint_uint(current_array1, coeff_count, copy_operand1.get());
 
                 // Lazy reduction
                 ntt_negacyclic_harvey_lazy(copy_operand1.get(), small_ntt_tables_[i]);
 
                 dyadic_product_coeffmod(copy_operand1.get(), current_array2, coeff_count, small_ntt_tables_[i].modulus(), copy_operand1.get());
-                add_poly_poly_coeffmod(tmp_dest_modq.get() + (i * coeff_count), copy_operand1.get(), coeff_count, small_ntt_tables_[i].modulus(), 
+                add_poly_poly_coeffmod(tmp_dest_modq.get() + (i * coeff_count), copy_operand1.get(), coeff_count, small_ntt_tables_[i].modulus(),
                     tmp_dest_modq.get() + (i * coeff_count));
 
                 current_array1 += array_poly_uint64_count;
@@ -177,7 +177,7 @@ namespace seal
         // add c_0 into destination
         for (int i = 0; i < coeff_mod_count; i++)
         {
-            //add_poly_poly_coeffmod(tmp_dest_modq.get() + (i * coeff_count), encrypted.pointer() + (i * coeff_count), 
+            //add_poly_poly_coeffmod(tmp_dest_modq.get() + (i * coeff_count), encrypted.pointer() + (i * coeff_count),
             //    coeff_count, coeff_modulus_[i], tmp_dest_modq.get() + (i * coeff_count));
 
             // Lazy reduction
@@ -187,20 +187,20 @@ namespace seal
             }
 
             // Compute |gamma * plain|qi * ct(s)
-            multiply_poly_scalar_coeffmod(tmp_dest_modq.get() + (i * coeff_count), coeff_count, 
+            multiply_poly_scalar_coeffmod(tmp_dest_modq.get() + (i * coeff_count), coeff_count,
                 base_converter_.get_plain_gamma_product()[i], parms_.coeff_modulus()[i], tmp_dest_modq.get() + (i * coeff_count));
         }
-        
+
         // Make another temp destination to get the poly in mod {gamma U plain_modulus}
         Pointer tmp_dest_plain_gamma(allocate_poly(coeff_count, plain_gamma_uint64_count, pool));
 
         // Compute FastBConvert from q to {gamma, plain_modulus}
         base_converter_.fastbconv_plain_gamma(tmp_dest_modq.get(), tmp_dest_plain_gamma.get(), pool);
-        
+
         // Compute result multiply by coeff_modulus inverse in mod {gamma U plain_modulus}
         for (int i = 0; i < plain_gamma_uint64_count; i++)
         {
-            multiply_poly_scalar_coeffmod(tmp_dest_plain_gamma.get() + (i * coeff_count), coeff_count, 
+            multiply_poly_scalar_coeffmod(tmp_dest_plain_gamma.get() + (i * coeff_count), coeff_count,
                 base_converter_.get_neg_inv_coeff()[i], base_converter_.get_plain_gamma_array()[i], tmp_dest_plain_gamma.get() + (i * coeff_count));
         }
 
@@ -216,14 +216,14 @@ namespace seal
                 // Compute -(gamma - a) instead of (a - gamma)
                 tmp_dest_plain_gamma[i + coeff_count] = base_converter_.get_plain_gamma_array()[1].value() - tmp_dest_plain_gamma[i + coeff_count];
                 tmp_dest_plain_gamma[i + coeff_count] %= base_converter_.get_plain_gamma_array()[0].value();
-                wide_destination[i] = add_uint_uint_mod(tmp_dest_plain_gamma[i], tmp_dest_plain_gamma[i + coeff_count], 
+                wide_destination[i] = add_uint_uint_mod(tmp_dest_plain_gamma[i], tmp_dest_plain_gamma[i + coeff_count],
                     base_converter_.get_plain_gamma_array()[0]);
             }
             // No correction needed
             else
             {
                 tmp_dest_plain_gamma[i + coeff_count] %= base_converter_.get_plain_gamma_array()[0].value();
-                wide_destination[i] = sub_uint_uint_mod(tmp_dest_plain_gamma[i], tmp_dest_plain_gamma[i + coeff_count], 
+                wide_destination[i] = sub_uint_uint_mod(tmp_dest_plain_gamma[i], tmp_dest_plain_gamma[i + coeff_count],
                     base_converter_.get_plain_gamma_array()[0]);
             }
         }
@@ -235,7 +235,7 @@ namespace seal
         destination.resize(plain_coeff_count);
 
         // Perform final multiplication by gamma inverse mod plain_modulus
-        multiply_poly_scalar_coeffmod(wide_destination.get(), plain_coeff_count, base_converter_.get_inv_gamma(), 
+        multiply_poly_scalar_coeffmod(wide_destination.get(), plain_coeff_count, base_converter_.get_inv_gamma(),
             base_converter_.get_plain_gamma_array()[0], destination.pointer());
     }
 
@@ -259,7 +259,7 @@ namespace seal
 
         reader_lock.release();
 
-        // Need to extend the array 
+        // Need to extend the array
         int coeff_count = parms_.poly_modulus().coeff_count();
         int coeff_mod_count = parms_.coeff_modulus().size();
 
@@ -271,7 +271,7 @@ namespace seal
         uint64_t *prev_poly_ptr = new_secret_key_array.get() + (old_size - 1) * poly_ptr_increment;
         uint64_t *next_poly_ptr = prev_poly_ptr + poly_ptr_increment;
 
-        // Since all of the key powers in secret_key_array_ are already NTT transformed, to get the next one 
+        // Since all of the key powers in secret_key_array_ are already NTT transformed, to get the next one
         // we simply need to compute a dyadic product of the last one with the first one [which is equal to NTT(secret_key_)].
         for (int i = old_size; i < new_size; i++)
         {
@@ -284,7 +284,7 @@ namespace seal
             next_poly_ptr += poly_ptr_increment;
         }
 
-        
+
         // Take writer lock to update array
         WriterLock writer_lock = secret_key_array_locker_.acquire_write();
 
@@ -391,7 +391,7 @@ namespace seal
 
             for (int j = 0; j < encrypted_size - 1; j++)
             {
-                // Perform the dyadic product. 
+                // Perform the dyadic product.
                 set_uint_uint(current_array1, coeff_count, copy_operand1.get());
 
                 // Lazy reduction
@@ -422,11 +422,11 @@ namespace seal
 
         // Compose the noise
         compose(noise_poly.get());
-        
+
         // Next we compute the infinity norm mod parms_.coeff_modulus()
         poly_infty_norm_coeffmod(noise_poly.get(), coeff_count, coeff_mod_count, mod_, destination.get(), pool);
 
-        // The -1 accounts for scaling the invariant noise by 2 
+        // The -1 accounts for scaling the invariant noise by 2
         return max(0, mod_.significant_bit_count() - get_significant_bit_count_uint(destination.get(), coeff_mod_count) - 1);
     }
 }

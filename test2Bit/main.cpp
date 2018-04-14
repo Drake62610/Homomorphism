@@ -590,5 +590,30 @@ int main(){
   //test_isLesser2bit(evaluator,decryptor,encryptor);
   //test_isGreaterOrEqual2bit(evaluator,decryptor,encryptor);
   //test_multiply2bit(evaluator,decryptor,encryptor);
+
+  cout<<"Test multiply composant"<<endl;
+  Plaintext myPlaintext1("1");Plaintext myPlaintext0("0");
+  Plaintext plainResult("0");
+  Ciphertext myCipher1; encryptor.encrypt(myPlaintext1,myCipher1);
+  Ciphertext myCipher0; encryptor.encrypt(myPlaintext0,myCipher0);
+  CipherBit myCipherBit1(evaluator,encryptor,decryptor, myCipher1);
+  CipherBit myCipherBit0(evaluator,encryptor,decryptor, myCipher0);
+
+  //Tests
+  Cipher2Bit zero(myCipherBit0,myCipherBit0);
+  Cipher2Bit un(myCipherBit1,myCipherBit0);
+
+  cout << "Noise budget in bit0: " << decryptor.invariant_noise_budget(zero.getCipherBit0().getcipherBit()) << " bits" << endl;
+  cout << "Noise budget in bit1: " << decryptor.invariant_noise_budget(zero.getCipherBit1().getcipherBit()) << " bits" << endl;
+
+  zero.add(un);
+
+  cout << "Noise budget in bit0: " << decryptor.invariant_noise_budget(zero.getCipherBit0().getcipherBit()) << " bits" << endl;
+  cout << "Noise budget in bit1: " << decryptor.invariant_noise_budget(zero.getCipherBit1().getcipherBit()) << " bits" << endl;
+
+  zero.reduceNoise();
+
+  cout << "Noise budget in bit0: " << decryptor.invariant_noise_budget(zero.getCipherBit0().getcipherBit()) << " bits" << endl;
+  cout << "Noise budget in bit1: " << decryptor.invariant_noise_budget(zero.getCipherBit1().getcipherBit()) << " bits" << endl;
   return 0;
 }
