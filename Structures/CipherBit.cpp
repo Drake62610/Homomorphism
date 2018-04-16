@@ -55,6 +55,7 @@ void CipherBit::XOR(CipherBit b){
   (this -> evaluator) -> negate(xored);
   (this -> evaluator) -> add(this -> cipherBit,xored);
   (this -> evaluator) -> square(this -> cipherBit); //Now this->cipherBit has the XORed result
+  (this -> reduceNoise());
 }
 
 CipherBit CipherBit::add(CipherBit b){
@@ -95,6 +96,7 @@ void CipherBit::multiply(CipherBit b){
   Ciphertext mult = b.getcipherBit();
   Ciphertext copy = this -> cipherBit;
   (this -> evaluator) -> multiply(this -> cipherBit,mult);
+  this -> reduceNoise();
 }
 
 void CipherBit::reduceNoise(){

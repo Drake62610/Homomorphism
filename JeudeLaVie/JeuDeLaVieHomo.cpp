@@ -16,17 +16,24 @@ void destroy(CipherBit** matrix,int largeur,int longueur){
 }
 Cipher3Bit compteurLivingCell(CipherBit** matrix,int largeur,int longueur,int posC,int posL,Encryptor encryptor,Evaluator evaluator, Decryptor decryptor, Cipher3Bit compteur){
 	CipherBit tmp; Plaintext print;
+	int colonne,ligne;
 	for (int i=-1;i<2;i++){
 		for(int j=-1;j<2;j++){
 			//cout<<"i= "<<i<<endl;
 			//cout<<"j= "<<j<<endl;
-			if (i==0 && j==0){
+			colonne=posC+j;
+			ligne=posL+i;
+			if ((colonne==-1)||(ligne==-1)||(colonne==largeur)||(ligne==longueur)){
+				continue;
+			}
+			else if (i==0 && j==0){
 				continue;
 			}
 			else {
 				//cout<<"avant l'incrementation"<<endl;
-				tmp=matrix[(posC+i+largeur)%largeur][(posL+j+longueur)%longueur].copy();
-			  //decryptor.decrypt(tmp.getcipherBit(),print);
+				//tmp=matrix[(posC+i+largeur)%largeur][(posL+j+longueur)%longueur].copy();
+				tmp=matrix[ligne%largeur][colonne%longueur];
+				//decryptor.decrypt(tmp.getcipherBit(),print);
 				//cout << "etat = " << print.to_string() << endl;
 				compteur.incrementation(tmp); // On ajoute l'etat de la case au compteur pour compter les cellules vivantes
 				compteur.reduceNoise(); //Triche simulation du futur
@@ -99,12 +106,13 @@ void globale(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longueur,
 
 	cout <<	"initToZero" << endl;
 	matrixNext[0][0]= compteurMSB;
-
+	int cellule=0;
 	for (int etape=0;etape<nbEtape;etape++){
 		for (int i=0;i<largeur;i++){
 			for (int j=0;j<longueur;j++){
 				//cout<<"on est dans les for"<<endl;
-				cout<<"cellule n° "<<i+j<<endl;
+				cellule+=1;
+				cout<<"cellule n° "<<cellule<<endl;
 				//std::cout << "copy dans _cmptr" << '\n';
 				_cmptr = compteur.copy();
 					//cout << "Controle _cmpt = 0" << endl;
@@ -116,17 +124,17 @@ void globale(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longueur,
 					// cout << "bit1= " << plainResult.to_string() << endl;
 					// decryptor.decrypt(_cmptr.getMSB().getcipherBit(),plainResult);
 					// cout << "bit2= " << plainResult.to_string()<<endl;
-				_cmptr = compteurLivingCell(matrix,largeur,longueur,i,j,encryptor,evaluator,decryptor,_cmptr);
+				_cmptr = compteurLivingCell(matrix,largeur,longueur,j,i,encryptor,evaluator,decryptor,_cmptr);
 				//cout<<"On a le compteur, affichage :"<<endl;
 				_cmptr.reduceNoise();
-					// cout << "Affichage du tampon après comptage" << endl;
-					// test = _cmptr.getPartie0();
-					// decryptor.decrypt(test.getCipherBit0().getcipherBit(),plainResult);
-					// cout << "bit0= " << plainResult.to_string()<< endl;
-					// decryptor.decrypt(test.getCipherBit1().getcipherBit(),plainResult);
-					// cout << "bit1= " << plainResult.to_string() << endl;
-					// decryptor.decrypt(_cmptr.getMSB().getcipherBit(),plainResult);
-					// cout << "bit2= " << plainResult.to_string()<<endl;
+					cout << "Affichage du tampon après comptage" << endl;
+					Cipher2Bit test = _cmptr.getPartie0();
+					decryptor.decrypt(test.getCipherBit0().getcipherBit(),plainResult);
+					cout << "bit0= " << plainResult.to_string()<< endl;
+					decryptor.decrypt(test.getCipherBit1().getcipherBit(),plainResult);
+					cout << "bit1= " << plainResult.to_string() << endl;
+					decryptor.decrypt(_cmptr.getMSB().getcipherBit(),plainResult);
+					cout << "bit2= " << plainResult.to_string()<<endl;
 				Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);
 				CipherBit faux(evaluator,encryptor,decryptor,myCipher0);
 				Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
@@ -191,13 +199,13 @@ void globale(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longueur,
 					//result+=XOR(compteur,"2").inverse4Bits().4BitsTo1Bit()*(matrix[i][j]) + XOR(compteur,"3").inverse().4BitsTo1Bit()*("true");
 
 				*/
-				cout<<"première itération fini"<<endl;
 			}
+			cout<<"première itération fini"<<endl;
 		}
 		//cout<<"WHAT"<<endl;
 		//copyMatrix(matrix,matrixNext,largeur,longueur);
 		cout<<"Après l'étape "<<etape<<endl;
-		printMatrix(matrixNext,largeur-1,longueur-1,decryptor);
+		printMatrix(matrixNext,largeur,longueur,decryptor);
 	}
 	//destroy(matrixNext,largeur,longueur);
 }
@@ -206,8 +214,8 @@ void globale(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longueur,
 int main(){
   //Configuration des paramètres homomorphiques
     EncryptionParameters parms;
-    parms.set_poly_modulus("1x^16384 + 1");
-    parms.set_coeff_modulus(coeff_modulus_128(16384));
+    parms.set_poly_modulus("1x^8192 + 1");
+    parms.set_coeff_modulus(coeff_modulus_128(8192));
     parms.set_plain_modulus(1<<2);
   //Validation des paramètres et création du contexte
     SEALContext context(parms);
