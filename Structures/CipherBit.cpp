@@ -99,6 +99,7 @@ void CipherBit::multiply(CipherBit b){
 
 void CipherBit::reduceNoise(){
   Plaintext tmp; Ciphertext tmp2;
+  cout << "Noise " << this -> decryptor -> invariant_noise_budget(this -> cipherBit) << " bits" << endl;
   this -> decryptor -> decrypt (this -> cipherBit,tmp);
   cout << "bit = " << tmp.to_string() << endl;
   this -> encryptor -> encrypt(tmp,tmp2);
