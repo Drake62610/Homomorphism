@@ -127,14 +127,14 @@ void globale(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longueur,
 				_cmptr = compteurLivingCell(matrix,largeur,longueur,j,i,encryptor,evaluator,decryptor,_cmptr);
 				//cout<<"On a le compteur, affichage :"<<endl;
 				_cmptr.reduceNoise();
-					cout << "Affichage du tampon après comptage" << endl;
-					Cipher2Bit test = _cmptr.getPartie0();
-					decryptor.decrypt(test.getCipherBit0().getcipherBit(),plainResult);
-					cout << "bit0= " << plainResult.to_string()<< endl;
-					decryptor.decrypt(test.getCipherBit1().getcipherBit(),plainResult);
-					cout << "bit1= " << plainResult.to_string() << endl;
-					decryptor.decrypt(_cmptr.getMSB().getcipherBit(),plainResult);
-					cout << "bit2= " << plainResult.to_string()<<endl;
+					// cout << "Affichage du tampon après comptage" << endl;
+					// Cipher2Bit test = _cmptr.getPartie0();
+					// decryptor.decrypt(test.getCipherBit0().getcipherBit(),plainResult);
+					// cout << "bit0= " << plainResult.to_string()<< endl;
+					// decryptor.decrypt(test.getCipherBit1().getcipherBit(),plainResult);
+					// cout << "bit1= " << plainResult.to_string() << endl;
+					// decryptor.decrypt(_cmptr.getMSB().getcipherBit(),plainResult);
+					// cout << "bit2= " << plainResult.to_string()<<endl;
 				Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);
 				CipherBit faux(evaluator,encryptor,decryptor,myCipher0);
 				Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
@@ -200,12 +200,12 @@ void globale(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longueur,
 
 				*/
 			}
-			cout<<"première itération fini"<<endl;
 		}
+		cout<<"première itération fini"<<endl;
 		//cout<<"WHAT"<<endl;
-		//copyMatrix(matrix,matrixNext,largeur,longueur);
+		copyMatrix(matrix,matrixNext,largeur,longueur);
 		cout<<"Après l'étape "<<etape<<endl;
-		printMatrix(matrixNext,largeur,longueur,decryptor);
+		printMatrix(matrix,largeur,longueur,decryptor);
 	}
 	//destroy(matrixNext,largeur,longueur);
 }
@@ -214,8 +214,8 @@ void globale(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longueur,
 int main(){
   //Configuration des paramètres homomorphiques
     EncryptionParameters parms;
-    parms.set_poly_modulus("1x^8192 + 1");
-    parms.set_coeff_modulus(coeff_modulus_128(8192));
+    parms.set_poly_modulus("1x^4096 + 1");
+    parms.set_coeff_modulus(coeff_modulus_128(4096));
     parms.set_plain_modulus(1<<2);
   //Validation des paramètres et création du contexte
     SEALContext context(parms);
@@ -282,7 +282,7 @@ int main(){
 	// cout<<"Xor tmp3B & deux"<<endl;
 	// tmp3B.XOR(deux);
 
-  globale(matrix,matrixNext,largeur,longueur,1,encryptor,evaluator,decryptor);
+  globale(matrix,matrixNext,largeur,longueur,2,encryptor,evaluator,decryptor);
 	//destroy(matrix,largeur,longueur);
 	return 0;
 }
