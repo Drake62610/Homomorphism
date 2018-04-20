@@ -115,26 +115,10 @@ void globale(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longueur,
 				cout<<"cellule n° "<<cellule<<endl;
 				//std::cout << "copy dans _cmptr" << '\n';
 				_cmptr = compteur.copy();
-					//cout << "Controle _cmpt = 0" << endl;
 					_cmptr.reduceNoise();
-					// Cipher2Bit test; test = _cmptr.getPartie0();
-					// decryptor.decrypt(test.getCipherBit0().getcipherBit(),plainResult);
-					// cout << "bit0= " << plainResult.to_string()<< endl;
-					// decryptor.decrypt(test.getCipherBit1().getcipherBit(),plainResult);
-					// cout << "bit1= " << plainResult.to_string() << endl;
-					// decryptor.decrypt(_cmptr.getMSB().getcipherBit(),plainResult);
-					// cout << "bit2= " << plainResult.to_string()<<endl;
 				_cmptr = compteurLivingCell(matrix,largeur,longueur,j,i,encryptor,evaluator,decryptor,_cmptr);
-				//cout<<"On a le compteur, affichage :"<<endl;
 				_cmptr.reduceNoise();
-					// cout << "Affichage du tampon après comptage" << endl;
-					// Cipher2Bit test = _cmptr.getPartie0();
-					// decryptor.decrypt(test.getCipherBit0().getcipherBit(),plainResult);
-					// cout << "bit0= " << plainResult.to_string()<< endl;
-					// decryptor.decrypt(test.getCipherBit1().getcipherBit(),plainResult);
-					// cout << "bit1= " << plainResult.to_string() << endl;
-					// decryptor.decrypt(_cmptr.getMSB().getcipherBit(),plainResult);
-					// cout << "bit2= " << plainResult.to_string()<<endl;
+
 				Plaintext myplain0("0");	Ciphertext myCipher0;	encryptor.encrypt(myplain0,myCipher0);
 				CipherBit faux(evaluator,encryptor,decryptor,myCipher0);
 				Plaintext myplain1("1");	Ciphertext myCipher1;	encryptor.encrypt(myplain1,myCipher1);
@@ -146,34 +130,38 @@ void globale(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longueur,
 				CipherBit result=faux.copy();
 				CipherBit tmp=faux.copy();
 
-				//cout<<"Début des if"<<endl;
-				//egal à 2?
+				//egal à 2?  pswitch(tmp3B){
+				//									case deux: matrix[i][j];
+				//									case trois: vrai;
+				//									case default: faux;
+				//							}
 				Cipher3Bit tmp3B=_cmptr.copy();
-				//cout<<"Xor tmp3B & deux"<<endl;
 				tmp3B.XOR(deux);
-				//cout<<"2"<<endl;
 				tmp3B.reverse();
-				//cout<<"3"<<endl;
 				tmp=tmp3B.multiplyComposant();
-				//cout<<"4"<<endl;
 				tmp.multiply(matrix[i][j]);
-				// cout<<"5"<<endl;
 				result.add(tmp);
+/*
+	CipherBit tmp=faux.copy();
+	Cipher3Bit tmp3;
 
+	tmp3B=COMPARATEUR1.copy();
+	tmp3B.XOR(COMPARATEUR2);
+	tmp3B.reverse();
+	tmp=tmp3B.multiplyComposant();
+	AFFECTE.add(tmp);
+
+
+	matrixNext[i][j]= result;
+*/
 				//égal à 3?
-				// cout<<"Xor tmp3B & trois"<<endl;
 				tmp3B=_cmptr.copy();
 				tmp3B.XOR(trois);
-				// cout<<"2"<<endl;
 				tmp3B.reverse();
-				// cout<<"3"<<endl;
 				tmp=tmp3B.multiplyComposant();
-				// cout<<"4"<<endl;
 				tmp.multiply(vrai);
-				// cout<<"5"<<endl;
 				result.add(tmp);
-				//result.add(XOR(compteur,"3").inverse().4BitsTo1Bit());
-				// std::cout << "ecrasement" << '\n';
+				
 				matrixNext[i][j]= result;
 
 				/*if (compteur==2){
@@ -195,9 +183,7 @@ void globale(CipherBit** matrix,CipherBit** matrixNext,int largeur,int longueur,
 					result="false";
 					result.add(XOR(compteur,"2").inverse4Bits().4BitsTo1Bit().multiply(matrix[i][j]));
 					result.add(XOR(compteur,"3").inverse().4BitsTo1Bit());
-
 					//result+=XOR(compteur,"2").inverse4Bits().4BitsTo1Bit()*(matrix[i][j]) + XOR(compteur,"3").inverse().4BitsTo1Bit()*("true");
-
 				*/
 			}
 		}
